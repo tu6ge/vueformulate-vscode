@@ -2,9 +2,10 @@ import { TagObject } from '@/hover-tips'
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, ProviderResult, Range, CompletionItem, CompletionContext, CompletionList, CompletionItemKind, workspace } from 'vscode'
 
 import CnDocument from '../document/zh-CN'
+import {typeAttribute as CnTypeAttribute} from '../document/zh-CN'
 import EnDocument from '../document/en-US'
 import { ExtensionConfigutation, ExtensionLanguage } from '..'
-import { DocumentAttribute, DocumentEvent, DocumentMethod, ElDocument } from '@/document'
+import { DocumentAttribute, DocumentEvent, DocumentMethod, ElDocument, TypeAttribute } from '@/document'
 
 export class ElementCompletionItemProvider implements CompletionItemProvider<CompletionItem> {
   private _document!: TextDocument
@@ -14,6 +15,7 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
   private attrReg: RegExp = /(?:\(|\s*)([\w-]+)=['"][^'"]*/
   private tagStartReg: RegExp = /<([\w-]*)$/
   private pugTagStartReg: RegExp = /^\s*[\w-]*$/
+  private typeReg: RegExp = /type=\"(.*)\"/
   private size!: number
   private quotes!: string
 
@@ -39,6 +41,16 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
       line--
     }
     return undefined
+  }
+
+  getFormulateType(): string {
+    let line = this._position.line
+    let txt = this._document.lineAt(line).text
+    let match: RegExpExecArray | null
+    if( match =this.typeReg.exec(txt)) {
+      return match[1]
+    }
+    return ''
   }
 
   /**
@@ -218,20 +230,33 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
    *
    * @param tag 标签
    */
-  getAttrCompletionItems(tag: string): CompletionItem[] {
+  getAttrCompletionItems(tag: string, formulateType: string): CompletionItem[] {
     let completionItems: CompletionItem[] = []
     const config = workspace.getConfiguration().get<ExtensionConfigutation>('element-ui-helper')
     const language = config?.language || ExtensionLanguage.cn
     let document: Record<string, any>
+    let typeAttribute: TypeAttribute[]
     const preText = this.getTextBeforePosition(this._position)
     const prefix = preText.replace(/.*[\s@:]/g, '')
     if (language === ExtensionLanguage.en) {
       document = EnDocument
+      typeAttribute = []
     } else {
       document = CnDocument
+      typeAttribute = CnTypeAttribute
     }
     const attributes: DocumentAttribute[] = document[tag].attributes || []
-    const likeTag = attributes.filter((attribute: DocumentAttribute) => attribute.name.includes(prefix))
+    let likeTag = attributes.filter((attribute: DocumentAttribute) => attribute.name.includes(prefix))
+
+    if(formulateType){
+      let typeItem = typeAttribute.find(res=>{
+        return res.name === formulateType
+      })
+      if(typeItem){
+        likeTag = likeTag.concat(typeItem.attributes)
+      }
+    }
+
     likeTag.forEach((attribute: DocumentAttribute) => {
       const start = Math.max(preText.lastIndexOf(' '), preText.lastIndexOf(':')) + 1
       const end = start + prefix.length
@@ -248,6 +273,8 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
         range,
       })
     })
+
+    
     return completionItems
   }
 
@@ -307,6 +334,9 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
     let tag: TagObject | undefined = this.getPreTag()
     let attr = this.getPreAttr()
 
+    let line = this._position.line
+    let formulateType = this.getFormulateType()
+
     if (!tag || !/^[F|f]orm/.test(tag.text || '')) {
       // 如果不是element的标签(E|el开头) 则返回 null 表示没有hover
       return null
@@ -318,7 +348,7 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
       return this.getEventCompletionItems(tag.text)
     } else if (this.isAttrStart(tag)) {
       // 判断属性
-      return this.getAttrCompletionItems(tag.text)
+      return this.getAttrCompletionItems(tag.text, formulateType)
     } else if (this.isTagStart()) {
       // 判断标签
       return this.getTagCompletionItems(tag.text)

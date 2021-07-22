@@ -1,5 +1,7 @@
 import { ElDocument } from '@/document'
 import { DocumentAttribute } from '@/document'
+import { TypeAttribute } from '@/document'
+
 
 export const attributes: DocumentAttribute[] = [
   {
@@ -98,14 +100,7 @@ export const attributes: DocumentAttribute[] = [
     default: '—',
     link:'/guide/inputs/#props'
   },
-  {
-    name: 'options',
-    description: '选项',
-    type: 'array',
-    value: '',
-    default: '[]',
-    link: '/guide/inputs/types/box/'
-  },
+  
   {
     name: 'placeholder',
     description: '占位符',
@@ -176,6 +171,193 @@ export const attributes: DocumentAttribute[] = [
     type: 'string / number',
     value: '',
     default: '—'
+  },
+]
+
+const boxAttributes: DocumentAttribute[] = [
+  {
+    name: 'options',
+    description: '选项',
+    type: 'array',
+    value: '',
+    default: '[]',
+    link: '/guide/inputs/types/box/'
+  },
+]
+
+const fileAttributes: DocumentAttribute[] = [
+  {
+    name: 'accept',
+    description: '标准的 HTML',
+    type: 'string',
+    value: '',
+    default: '',
+    link: '/guide/inputs/types/file/#props'
+  },
+  {
+    name: 'add-label',
+    description: '添加按钮的文字',
+    type: 'string',
+    value: '',
+    default: '',
+    link: '/guide/inputs/types/file/#props'
+  },
+  {
+    name: 'image‑behavior',
+    description: '是否显示图片缩略图',
+    type: 'string',
+    value: 'preview / file',
+    default: '',
+    link: '/guide/inputs/types/file/#props'
+  },
+  {
+    name: 'prevent‑window‑drops',
+    description: '防止错误拖动',
+    type: 'boolean',
+    value: 'true',
+    default: '',
+    link: '/guide/inputs/types/file/#props'
+  },
+  {
+    name: 'uploader',
+    description: '上传处理器',
+    type: 'function',
+    value: '',
+    default: '',
+    link: '/guide/inputs/types/file/'
+  },
+  {
+    name: 'upload‑behavior',
+    description: '是否立即上传',
+    type: 'string',
+    value: 'live / delayed',
+    default: 'live',
+    link: '/guide/inputs/types/file/'
+  },
+  {
+    name: 'upload‑url',
+    description: '自定义上传文件的 API',
+    type: 'string',
+    value: '',
+    default: '',
+    link: '/guide/inputs/types/file/'
+  },
+]
+
+export const typeAttribute: TypeAttribute[] = [
+  {
+    name: 'button',
+    attributes: [
+      {
+        name: 'disabled',
+        description: '设为不可用',
+        type: 'boolean',
+        value: '',
+        default: '',
+      }
+    ],
+  },
+  {
+    name: 'checkbox',
+    attributes: boxAttributes,
+  },
+  {
+    name: 'radio',
+    attributes: boxAttributes,
+  },
+  {
+    name: 'select',
+    attributes: boxAttributes,
+  },
+  {
+    name: 'file',
+    attributes: fileAttributes
+  },
+  {
+    name: 'image',
+    attributes: fileAttributes
+  },
+  {
+    name: 'group',
+    attributes: [
+      {
+        name: 'add-label',
+        description: '添加按钮的文字',
+        type: 'string',
+        value: '',
+        default: '',
+        link: '/guide/inputs/types/group/#props'
+      },
+      {
+        name: 'limit',
+        description: '最大可重复数',
+        type: 'number',
+        value: '',
+        default: '',
+        link: '/guide/inputs/types/group/#props'
+      },
+      {
+        name: 'minimum',
+        description: '最小可重复数',
+        type: 'number',
+        value: '',
+        default: '',
+        link: '/guide/inputs/types/group/#props'
+      },
+      {
+        name: 'remove-label',
+        description: '删除按钮上的文字',
+        type: 'string',
+        value: '',
+        default: '',
+        link: '/guide/inputs/types/group/#props'
+      },
+      {
+        name: 'remove-position',
+        description: '删除按钮的位置',
+        type: 'string',
+        value: 'before / after',
+        default: 'after',
+        link: '/guide/inputs/types/group/#props'
+      },
+      {
+        name: 'repeatable',
+        description: '是否可重复',
+        type: 'boolean',
+        value: 'true',
+        default: '',
+        link: '/guide/inputs/types/group/#props'
+      },
+      {
+        name: 'group-errors',
+        description: '自定义子集错误信息',
+        type: 'object',
+        value: '',
+        default: '',
+        link: '/guide/inputs/types/group/#为分组设置错误信息'
+      },
+    ]
+  },
+  {
+    name: 'range',
+    attributes: [
+      {
+        name: 'min',
+        description: '滑块最小值',
+        type: 'number',
+        value: '',
+        default: '0',
+        link: '/guide/inputs/types/sliders/'
+      },
+      {
+        name: 'max',
+        description: '滑块最大值',
+        type: 'number',
+        value: '',
+        default: '100',
+        link: '/guide/inputs/types/sliders/'
+      },
+    ],
   },
 ]
 

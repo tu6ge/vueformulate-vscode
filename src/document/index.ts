@@ -14,6 +14,11 @@ export interface DocumentAttribute {
   link?: string
 }
 
+export interface TypeAttribute {
+  name: string,
+  attributes: DocumentAttribute[],
+}
+
 export interface DocumentEvent {
   // 事件名称
   name: string
