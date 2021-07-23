@@ -48,9 +48,18 @@ export class ElementHoverProvier implements HoverProvider {
     }
 
     const attr = this.getAttr()
+    let preTag: TagObject | undefined = this.getPreTag()
+    //this.isEventStart(preTag)
+
     const range = this.getHoverRange(attr)
 
-    return this.getHoverInstance(tag, attr, range)
+    const kebabCaseTag = tag?.text || ''
+
+    if(this.isEventStart(preTag)){
+      return this.createHoverEventInstance(kebabCaseTag, attr, range)
+    }
+
+    return this.createHoverAttributeInstance(kebabCaseTag, attr, range)
   }
 
   /**
@@ -87,6 +96,39 @@ export class ElementHoverProvier implements HoverProvider {
     let start = txt.lastIndexOf(' ', this._position.character) + 1
     let parsedTxt = this._document.getText(new Range(this._position.line, start, this._position.line, end))
     return this.matchAttr(this.attrReg, parsedTxt)
+  }
+
+  /**
+   * 获取前置标签
+   */
+   getPreTag(): TagObject | undefined {
+    let line = this._position.line
+    let tag: TagObject | string | undefined
+    let txt = this.getTextBeforePosition(this._position)
+
+    while (this._position.line - line < 10 && line >= 0) {
+      if (line !== this._position.line) {
+        txt = this._document.lineAt(line).text
+      }
+      tag = this.matchTag(this.tagReg, txt, line)
+      if (tag === 'break') {
+        return undefined
+      }
+      if (tag) {
+        return <TagObject>tag
+      }
+      line--
+    }
+    return undefined
+  }
+
+  /**
+   * 是否为方法的开始
+   * @param tag 标签
+   */
+  isEventStart(tag: TagObject | undefined) {
+    const preText = this.getTextBeforePosition(this._position)
+    return tag && /\ \@[\w-]*$/.test(preText)
   }
 
   getFormulateType(): string {
@@ -178,34 +220,17 @@ export class ElementHoverProvier implements HoverProvider {
   }
 
   /**
-   * 获取Hover实例
-   *
-   * @param tag 标签
-   * @param attr 属性
-   * @param range 区域
-   */
-  getHoverInstance(tag: TagObject | undefined, attr: string, range: Range) {
-    const config = workspace.getConfiguration().get<ExtensionConfigutation>('vueformulate-helper')
-    const language = config?.language || ExtensionLanguage.cn
-
-    const kebabCaseTag = tag?.text || ''
-    //const kebabCaseAttr = toKebabCase(attr)
-
-    return this.createHoverInstance(language, kebabCaseTag, attr, range)
-  }
-
-  /**
-   * 创建Hover实例
+   * 创建Hover实例 属性
    *
    * @param language 语言
    * @param tag 标签
    * @param attr 属性
    * @param range 范围
    */
-  createHoverInstance(language: ExtensionLanguage, tag: string, attr: string, range: Range): null | Hover {
+  createHoverAttributeInstance(tag: string, attr: string, range: Range): null | Hover {
 
     if (tag === attr) {
-      attr = ''
+      return null
     }
     let formulateType = this.getFormulateType();
     //console.log(formulateType)
@@ -245,6 +270,56 @@ export class ElementHoverProvier implements HoverProvider {
     markdown.appendMarkdown('\n\n')
     if(attributes.link){
       markdown.appendMarkdown(`[文档链接](${this.docsSite}${attributes.link})`)
+    }
+    hoverMarkdownStrings.push(markdown)
+    return new Hover(hoverMarkdownStrings, range)
+  }
+
+  /**
+   * 创建Hover实例 事件
+   *
+   * @param language 语言
+   * @param tag 标签
+   * @param attr 属性
+   * @param range 范围
+   */
+   createHoverEventInstance(tag: string, attr: string, range: Range): null | Hover {
+
+    if (tag === attr) {
+      return null
+    }
+    let formulateType = this.getFormulateType();
+    //console.log(formulateType)
+
+    if (!Object.prototype.hasOwnProperty.call(this.formulateDocument, tag)) {
+      return null
+    }
+
+    let tagDocument = this.formulateDocument[tag].events
+
+    if(formulateType){
+      let typeItem = this.typeAttribute.find(res=>{
+        return res.name === formulateType
+      })
+      if(typeItem && typeItem.events){
+        tagDocument = tagDocument.concat(typeItem.events)
+      }
+    }
+    const events = tagDocument.find(res=>{
+      return res.name === attr
+    })
+    if(events===undefined){
+      return null
+    }
+    
+    const hoverMarkdownStrings: MarkdownString[] = []
+    let markdown: MarkdownString = new MarkdownString('', true);
+
+    markdown.appendMarkdown(`${events.description}\n`)
+    markdown.appendMarkdown('**********\n')
+    markdown.appendMarkdown('\n\n')
+    if(events.link){
+      markdown.appendMarkdown(`[文档链接](${this.docsSite}${events.link})`)
     }
     hoverMarkdownStrings.push(markdown)
     return new Hover(hoverMarkdownStrings, range)

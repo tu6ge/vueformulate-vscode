@@ -244,6 +244,33 @@ const fileAttributes: DocumentAttribute[] = [
   },
 ]
 
+const fileEvents: DocumentEvent[] = [
+  {
+    name: 'file-upload-progress',
+    description: '当 [上传器](__DOCS_SITE__/guide/inputs/types/file/#uploader) 更新文件上传的进度时发出。有效负载是一个进度整数 (0-100)。',
+    parameter: '(value: number)',
+    link: '/guide/inputs/types/file/#事件'
+  },
+  {
+    name: 'file-upload-complete',
+    description: '当文件完成上传时发出。有效载荷是 `file` 对象。',
+    parameter: '(value: number)',
+    link: '/guide/inputs/types/file/#事件'
+  },
+  {
+    name: 'file-upload-error',
+    description: '在上传过程中调用的 `uploader` 函数时发出的 `error`。有效载荷是错误本身。',
+    parameter: '-',
+    link: '/guide/inputs/types/file/#事件'
+  },
+  {
+    name: 'file-removed',
+    description: '当文件从 `FileList` 中移除后触发. 有效载荷是内部文件数组。',
+    parameter: '-',
+    link: '/guide/inputs/types/file/#事件'
+  }
+]
+
 export const typeAttribute: TypeAttribute[] = [
   {
     name: 'button',
@@ -271,11 +298,13 @@ export const typeAttribute: TypeAttribute[] = [
   },
   {
     name: 'file',
-    attributes: fileAttributes
+    attributes: fileAttributes,
+    events: fileEvents
   },
   {
     name: 'image',
-    attributes: fileAttributes
+    attributes: fileAttributes,
+    events: fileEvents
   },
   {
     name: 'group',
@@ -336,6 +365,20 @@ export const typeAttribute: TypeAttribute[] = [
         default: '',
         link: '/guide/inputs/types/group/#为分组设置错误信息'
       },
+    ],
+    events: [
+      {
+        name: 'repeatable-added',
+        description: '将新的可重复项添加到分组时触发。',
+        parameter: '-',
+        link: '/guide/inputs/types/group/#事件'
+      },
+      {
+        name: 'repeatable-removed',
+        description: '从组中删除可重复项时触发',
+        parameter: '-',
+        link: '/guide/inputs/types/group/#事件'
+      }
     ]
   },
   {

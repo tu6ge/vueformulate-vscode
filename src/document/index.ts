@@ -17,6 +17,7 @@ export interface DocumentAttribute {
 export interface TypeAttribute {
   name: string,
   attributes: DocumentAttribute[],
+  events?: DocumentEvent[],
 }
 
 export interface DocumentEvent {

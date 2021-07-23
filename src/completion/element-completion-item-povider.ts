@@ -209,12 +209,22 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
    *
    * @param tag 标签
    */
-  getEventCompletionItems(tag: string): CompletionItem[] {
+  getEventCompletionItems(tag: string, formulateType: string): CompletionItem[] {
     let completionItems: CompletionItem[] = []
     const preText = this.getTextBeforePosition(this._position)
     const prefix = preText.replace(/.*@([\w-]*)$/, '$1')
 
-    const events: DocumentEvent[] = this.formulateDocument[tag]?.events || []
+    let events: DocumentEvent[] = this.formulateDocument[tag]?.events || []
+
+    if(formulateType){
+      let typeItem = this.typeAttribute.find(res=>{
+        return res.name === formulateType
+      })
+      if(typeItem && typeItem.events){
+        events = events.concat(typeItem.events)
+      }
+    }
+
     const likeTag = events.filter((evnet: DocumentEvent) => evnet.name.includes(prefix))
     likeTag.forEach((event: DocumentEvent) => {
       let description = event.description
@@ -357,7 +367,7 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
       return this.getAttrValueCompletionItems(tag.text, attr, formulateType)
     } else if (this.isEventStart(tag)) {
       // 优先判定事件
-      return this.getEventCompletionItems(tag.text)
+      return this.getEventCompletionItems(tag.text, formulateType)
     } else if (this.isAttrStart(tag)) {
       // 判断属性
       return this.getAttrCompletionItems(tag.text, formulateType)
