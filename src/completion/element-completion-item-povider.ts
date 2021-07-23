@@ -10,7 +10,7 @@ import { CompletionItemProvider,
   CompletionList, 
   CompletionItemKind, 
   workspace,
-  MarkdownString
+  MarkdownString,
 } from 'vscode'
 
 import CnDocument from '../document/zh-CN'
@@ -30,6 +30,9 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
   private typeReg: RegExp = /type=\"([^\"]*)\"/
   private size!: number
   private quotes!: string
+  private formulateDocument: Record<string, any>
+  private typeAttribute: TypeAttribute[]
+  private docsSite: string
 
   /**
    * 获取前置标签
@@ -158,25 +161,13 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
    * @param attr 属性
    */
   getAttrValues(tag: string, attr: string, formulateType: string): string[] {
-    const config = workspace.getConfiguration().get<ExtensionConfigutation>('vueformulate-helper')
-    const language = config?.language || ExtensionLanguage.cn
-    let document: Record<string, any>
-    let typeAttribute: TypeAttribute[]
-    if (language === ExtensionLanguage.en) {
-      document = EnDocument
-      typeAttribute = []
-    } else {
-      document = CnDocument
-      typeAttribute = CnTypeAttribute
-    }
-    let attributes: DocumentAttribute[] = document[tag].attributes || []
+    let attributes: DocumentAttribute[] = this.formulateDocument[tag].attributes || []
     if(formulateType){
-      let typeItem = typeAttribute.find(res=>{
+      let typeItem = this.typeAttribute.find(res=>{
         return res.name === formulateType
       })
       if(typeItem){
         attributes = attributes.concat(typeItem.attributes)
-        //console.log(attributes)
       }
     }
     
@@ -220,21 +211,14 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
    */
   getEventCompletionItems(tag: string): CompletionItem[] {
     let completionItems: CompletionItem[] = []
-    const config = workspace.getConfiguration().get<ExtensionConfigutation>('vueformulate-helper')
-    const language = config?.language || ExtensionLanguage.cn
-    let document: Record<string, ElDocument | undefined>
     const preText = this.getTextBeforePosition(this._position)
     const prefix = preText.replace(/.*@([\w-]*)$/, '$1')
-    if (language === ExtensionLanguage.en) {
-      document = EnDocument
-    } else {
-      document = CnDocument
-    }
-    const events: DocumentEvent[] = document[tag]?.events || []
+
+    const events: DocumentEvent[] = this.formulateDocument[tag]?.events || []
     const likeTag = events.filter((evnet: DocumentEvent) => evnet.name.includes(prefix))
     likeTag.forEach((event: DocumentEvent) => {
       let description = event.description
-      description = description.replaceAll('__DOCS_SITE__', 'https://tu6ge.github.io/vueformulate.com/zh')
+      description = description.replaceAll('__DOCS_SITE__', this.docsSite)
 
       let descMD: MarkdownString = new MarkdownString('', true)
       descMD.appendMarkdown(description)
@@ -264,24 +248,13 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
    */
   getAttrCompletionItems(tag: string, formulateType: string): CompletionItem[] {
     let completionItems: CompletionItem[] = []
-    const config = workspace.getConfiguration().get<ExtensionConfigutation>('vueformulate-helper')
-    const language = config?.language || ExtensionLanguage.cn
-    let document: Record<string, any>
-    let typeAttribute: TypeAttribute[]
     const preText = this.getTextBeforePosition(this._position)
     const prefix = preText.replace(/.*[\s@:]/g, '')
-    if (language === ExtensionLanguage.en) {
-      document = EnDocument
-      typeAttribute = []
-    } else {
-      document = CnDocument
-      typeAttribute = CnTypeAttribute
-    }
-    const attributes: DocumentAttribute[] = document[tag].attributes || []
+    const attributes: DocumentAttribute[] = this.formulateDocument[tag].attributes || []
     let likeTag = attributes.filter((attribute: DocumentAttribute) => attribute.name.includes(prefix))
 
     if(formulateType){
-      let typeItem = typeAttribute.find(res=>{
+      let typeItem = this.typeAttribute.find(res=>{
         return res.name === formulateType
       })
       if(typeItem){
@@ -323,16 +296,9 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
    */
   getTagCompletionItems(tag: string): CompletionItem[] {
     let completionItems: CompletionItem[] = []
-    const config = workspace.getConfiguration().get<ExtensionConfigutation>('vueformulate-helper')
-    const language = config?.language || ExtensionLanguage.cn
     const preText = this.getTextBeforePosition(this._position)
-    let document: Record<string, any>
-    if (language === ExtensionLanguage.en) {
-      document = EnDocument
-    } else {
-      document = CnDocument
-    }
-    Object.keys(document).forEach((key) => {
+
+    Object.keys(this.formulateDocument).forEach((key) => {
       const start = preText.lastIndexOf('<') + 1
       const end = preText.length - start + 1
       const startPos = new Position(this._position.line, start)
@@ -348,6 +314,21 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
       })
     })
     return completionItems
+  }
+
+  constructor(){
+    
+    const config = workspace.getConfiguration().get<ExtensionConfigutation>('vueformulate-helper')
+    const language = config?.language || ExtensionLanguage.cn
+    if (language === ExtensionLanguage.en) {
+      this.formulateDocument = EnDocument
+      this.typeAttribute = []
+      this.docsSite = 'https://tu6ge.github.io/vueformulate.com'
+    } else {
+      this.formulateDocument = CnDocument
+      this.typeAttribute = CnTypeAttribute
+      this.docsSite = 'https://tu6ge.github.io/vueformulate.com/zh'
+    }
   }
 
   /**
@@ -366,7 +347,6 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
     let tag: TagObject | undefined = this.getPreTag()
     let attr = this.getPreAttr()
 
-    let line = this._position.line
     let formulateType = this.getFormulateType()
 
     if (!tag || !/^[F|f]orm/.test(tag.text || '')) {

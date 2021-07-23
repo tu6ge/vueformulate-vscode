@@ -16,6 +16,24 @@ export class ElementHoverProvier implements HoverProvider {
   private attrReg: RegExp = /(?:\(|\s*)([\w-]+)=?/
   private typeReg: RegExp = /type=\"([^\"]*)\"/
   private instance: Record<string, null | undefined | Hover> = {}
+  private formulateDocument: Record<string, any>
+  private typeAttribute: TypeAttribute[]
+  private docsSite: string
+
+  constructor(){
+    
+    const config = workspace.getConfiguration().get<ExtensionConfigutation>('vueformulate-helper')
+    const language = config?.language || ExtensionLanguage.cn
+    if (language === ExtensionLanguage.en) {
+      this.formulateDocument = EnDocument
+      this.typeAttribute = []
+      this.docsSite = 'https://tu6ge.github.io/vueformulate.com'
+    } else {
+      this.formulateDocument = CnDocument
+      this.typeAttribute = CnTypeAttribute
+      this.docsSite = 'https://tu6ge.github.io/vueformulate.com/zh'
+    }
+  }
 
   provideHover(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Hover> {
     this._document = document
@@ -185,29 +203,21 @@ export class ElementHoverProvier implements HoverProvider {
    * @param range 范围
    */
   createHoverInstance(language: ExtensionLanguage, tag: string, attr: string, range: Range): null | Hover {
-    let document: Record<string, any>
-    let typeAttribute: TypeAttribute[]
-    if (language === ExtensionLanguage.en) {
-      document = EnDocument
-      typeAttribute = []
-    } else {
-      document = CnDocument
-      typeAttribute = CnTypeAttribute
-    }
+
     if (tag === attr) {
       attr = ''
     }
     let formulateType = this.getFormulateType();
     //console.log(formulateType)
 
-    if (!Object.prototype.hasOwnProperty.call(document, tag)) {
+    if (!Object.prototype.hasOwnProperty.call(this.formulateDocument, tag)) {
       return null
     }
 
-    let tagDocument = document[tag].attributes
+    let tagDocument = this.formulateDocument[tag].attributes
 
     if(formulateType){
-      let typeItem = typeAttribute.find(res=>{
+      let typeItem = this.typeAttribute.find(res=>{
         return res.name === formulateType
       })
       if(typeItem){
@@ -234,7 +244,7 @@ export class ElementHoverProvier implements HoverProvider {
     }
     markdown.appendMarkdown('\n\n')
     if(attributes.link){
-      markdown.appendMarkdown(`[文档链接](https://tu6ge.github.io/vueformulate.com/zh${attributes.link})`)
+      markdown.appendMarkdown(`[文档链接](${this.docsSite}${attributes.link})`)
     }
     hoverMarkdownStrings.push(markdown)
     return new Hover(hoverMarkdownStrings, range)
