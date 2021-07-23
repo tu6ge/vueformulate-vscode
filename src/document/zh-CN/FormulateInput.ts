@@ -128,7 +128,7 @@ export const attributes: DocumentAttribute[] = [
     name: 'validation',
     description: '验证器',
     type: 'string / array',
-    value: 'required / email',
+    value: 'accepted / after / alpha / alphanumeric / bail / before / between / confirm / date / email / ends_with / in / matches / max / mime / min / not / number / optional / required / starts_with / url',
     default: '—',
     link:'/guide/validation/#可用的验证规则'
   },

@@ -53,6 +53,12 @@ export interface InputType {
   link?: string
 }
 
+export interface InputValidation {
+  name: string,
+  description: string,
+  link?: string
+}
+
 export type DocumentScopedSlot = DocumentSlot
 
 export interface ElDocument {
