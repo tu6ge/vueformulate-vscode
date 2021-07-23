@@ -120,7 +120,7 @@ export const attributes: DocumentAttribute[] = [
     name: 'type',
     description: '类型',
     type: 'string',
-    value: 'text / button / checkbox / radio / file / image / group / select / range / color / date / datetime-local / email / hidden / month / number / password / search / tel / time / url / week',
+    value: 'text / button / submit / checkbox / radio / file / image / group / select / range / color / date / datetime-local / email / hidden / month / number / password / search / tel / time / url / week',
     default: '—',
     link:'/guide/inputs/#props'
   },

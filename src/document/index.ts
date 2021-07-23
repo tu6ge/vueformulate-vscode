@@ -47,6 +47,12 @@ export interface DocumentSlot {
   description: string
 }
 
+export interface InputType {
+  name: string,
+  description: string,
+  link?: string
+}
+
 export type DocumentScopedSlot = DocumentSlot
 
 export interface ElDocument {

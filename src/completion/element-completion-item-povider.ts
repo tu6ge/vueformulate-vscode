@@ -14,10 +14,10 @@ import { CompletionItemProvider,
 } from 'vscode'
 
 import CnDocument from '../document/zh-CN'
-import {typeAttribute as CnTypeAttribute} from '../document/zh-CN'
+import {typeAttribute as CnTypeAttribute, typeValues as CnTypeValues} from '../document/zh-CN'
 import EnDocument from '../document/en-US'
 import { ExtensionConfigutation, ExtensionLanguage } from '..'
-import { DocumentAttribute, DocumentEvent, DocumentMethod, ElDocument, TypeAttribute } from '@/document'
+import { DocumentAttribute, DocumentEvent, DocumentMethod, ElDocument, TypeAttribute,InputType } from '@/document'
 
 export class ElementCompletionItemProvider implements CompletionItemProvider<CompletionItem> {
   private _document!: TextDocument
@@ -33,6 +33,7 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
   private formulateDocument: Record<string, any>
   private typeAttribute: TypeAttribute[]
   private docsSite: string
+  private typeValues: InputType[]
 
   /**
    * 获取前置标签
@@ -189,19 +190,41 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
   getAttrValueCompletionItems(tag: string, attr: string, formulateType: string): CompletionItem[] {
     let completionItems: CompletionItem[] = []
     const values = this.getAttrValues(tag, attr, formulateType)
+    
     values.forEach((value) => {
       if (/\w+/.test(value)) {
+        let documentation:MarkdownString = new MarkdownString('', true)
+        
+        if(attr === 'type'){
+          documentation = this.getAttrValueMarkdownByTypeValue(value)
+        }
         completionItems.push({
           label: `${value}`,
           sortText: `0${value}`,
           detail: `${tag}-${attr}`,
           kind: CompletionItemKind.Value,
           insertText: value,
-          documentation: 'documentation demo',
+          documentation: documentation,
         })
       }
     })
     return completionItems
+  }
+
+  private getAttrValueMarkdownByTypeValue(typeValue: string): MarkdownString {
+    let typeInfo: InputType | undefined
+    typeInfo = this.typeValues.find(res=>{
+      return res.name === typeValue
+    })
+
+    let documentation:MarkdownString = new MarkdownString('', true)
+    if(typeInfo === undefined){
+      return documentation
+    }
+    
+    documentation.appendMarkdown(typeInfo.description)
+    documentation.appendMarkdown(` 查看 [文档](${this.docsSite}${typeInfo.link}) 了解更多`)
+    return documentation
   }
 
   /**
@@ -334,10 +357,12 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
       this.formulateDocument = EnDocument
       this.typeAttribute = []
       this.docsSite = 'https://tu6ge.github.io/vueformulate.com'
+      this.typeValues = []
     } else {
       this.formulateDocument = CnDocument
       this.typeAttribute = CnTypeAttribute
       this.docsSite = 'https://tu6ge.github.io/vueformulate.com/zh'
+      this.typeValues = CnTypeValues
     }
   }
 
