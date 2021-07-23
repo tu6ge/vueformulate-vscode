@@ -49,7 +49,6 @@ export class ElementHoverProvier implements HoverProvider {
 
     const attr = this.getAttr()
     let preTag: TagObject | undefined = this.getPreTag()
-    //this.isEventStart(preTag)
 
     const range = this.getHoverRange(attr)
 
