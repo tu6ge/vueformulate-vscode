@@ -1,5 +1,17 @@
 import { TagObject } from '@/hover-tips'
-import { CompletionItemProvider, TextDocument, Position, CancellationToken, ProviderResult, Range, CompletionItem, CompletionContext, CompletionList, CompletionItemKind, workspace } from 'vscode'
+import { CompletionItemProvider, 
+  TextDocument, 
+  Position, 
+  CancellationToken, 
+  ProviderResult, 
+  Range, 
+  CompletionItem, 
+  CompletionContext, 
+  CompletionList, 
+  CompletionItemKind, 
+  workspace,
+  MarkdownString
+} from 'vscode'
 
 import CnDocument from '../document/zh-CN'
 import {typeAttribute as CnTypeAttribute} from '../document/zh-CN'
@@ -208,7 +220,7 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
    */
   getEventCompletionItems(tag: string): CompletionItem[] {
     let completionItems: CompletionItem[] = []
-    const config = workspace.getConfiguration().get<ExtensionConfigutation>('element-ui-helper')
+    const config = workspace.getConfiguration().get<ExtensionConfigutation>('vueformulate-helper')
     const language = config?.language || ExtensionLanguage.cn
     let document: Record<string, ElDocument | undefined>
     const preText = this.getTextBeforePosition(this._position)
@@ -221,6 +233,12 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
     const events: DocumentEvent[] = document[tag]?.events || []
     const likeTag = events.filter((evnet: DocumentEvent) => evnet.name.includes(prefix))
     likeTag.forEach((event: DocumentEvent) => {
+      let description = event.description
+      description = description.replaceAll('__DOCS_SITE__', 'https://tu6ge.github.io/vueformulate.com/zh')
+
+      let descMD: MarkdownString = new MarkdownString('', true)
+      descMD.appendMarkdown(description)
+
       const start = preText.lastIndexOf('@') + 1
       const end = start + prefix.length
       const startPos = new Position(this._position.line, start)
@@ -230,7 +248,7 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
         label: `${event.name}`,
         sortText: `0${event.name}`,
         detail: `${tag} Event`,
-        documentation: event.description,
+        documentation: descMD,
         kind: CompletionItemKind.Value,
         insertText: event.name,
         range
@@ -246,7 +264,7 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
    */
   getAttrCompletionItems(tag: string, formulateType: string): CompletionItem[] {
     let completionItems: CompletionItem[] = []
-    const config = workspace.getConfiguration().get<ExtensionConfigutation>('element-ui-helper')
+    const config = workspace.getConfiguration().get<ExtensionConfigutation>('vueformulate-helper')
     const language = config?.language || ExtensionLanguage.cn
     let document: Record<string, any>
     let typeAttribute: TypeAttribute[]
@@ -305,7 +323,7 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
    */
   getTagCompletionItems(tag: string): CompletionItem[] {
     let completionItems: CompletionItem[] = []
-    const config = workspace.getConfiguration().get<ExtensionConfigutation>('element-ui-helper')
+    const config = workspace.getConfiguration().get<ExtensionConfigutation>('vueformulate-helper')
     const language = config?.language || ExtensionLanguage.cn
     const preText = this.getTextBeforePosition(this._position)
     let document: Record<string, any>

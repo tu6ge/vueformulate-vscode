@@ -368,6 +368,24 @@ export const events: DocumentEvent[] = [
     parameter: '(event: Event)',
     link: '/guide/inputs/#事件'
   },
+  {
+    name: 'validation',
+    description: '只要表单域的验证状态发生变化就发出，无论错误可见性如何',
+    parameter: '(value: string)',
+    link: '/guide/validation/#验证器事件'
+  },
+  {
+    name: 'error-visibility',
+    description: '当错误的可见性发生变化时发出，例如，在 blur 或 submit (v2.3+) 时',
+    parameter: '(value: string)',
+    link: '/guide/inputs/#事件'
+  },
+  {
+    name: 'blur-context',
+    description: '失去焦点时触发，但包括表单域的 [上下文](__DOCS_SITE__/guide/inputs/#上下文对象) 作为有效负载',
+    parameter: '(value: string)',
+    link: '/guide/validation/#验证器事件'
+  },
 ]
 
 export const document: ElDocument = { attributes, events }

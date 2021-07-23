@@ -223,6 +223,9 @@ export class ElementHoverProvier implements HoverProvider {
     
     const hoverMarkdownStrings: MarkdownString[] = []
     let markdown: MarkdownString = new MarkdownString('', true);
+
+    // __DOCS_SITE__ 替换成 https://tu6ge.github.io/vueformulate.com/zh
+
     markdown.appendMarkdown(`**${attributes.description}**\n`)
     markdown.appendMarkdown('**********\n')
     markdown.appendMarkdown(`属性类型是 ${attributes.type}`)
