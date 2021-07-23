@@ -26,6 +26,8 @@ export interface DocumentEvent {
   description: string
   // 参数
   parameter: string
+  // 文档链接
+  link?: string
 }
 
 export interface DocumentMethod {

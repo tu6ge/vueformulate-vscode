@@ -1,5 +1,5 @@
 import { ElDocument } from '@/document'
-import { DocumentAttribute } from '@/document'
+import { DocumentAttribute,DocumentEvent } from '@/document'
 import { TypeAttribute } from '@/document'
 
 
@@ -361,6 +361,15 @@ export const typeAttribute: TypeAttribute[] = [
   },
 ]
 
-export const document: ElDocument = { attributes }
+export const events: DocumentEvent[] = [
+  {
+    name: 'input',
+    description: '每次字段值更改时发出。通常，这是通过使用 v-model 隐式使用的。',
+    parameter: '(event: Event)',
+    link: '/guide/inputs/#事件'
+  },
+]
+
+export const document: ElDocument = { attributes, events }
 
 export default document

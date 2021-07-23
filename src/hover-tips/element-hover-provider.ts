@@ -1,6 +1,8 @@
 import { HoverProvider, TextDocument, Position, CancellationToken, ProviderResult, Hover, workspace, MarkdownString, Range } from 'vscode'
 import CnDocument from '../document/zh-CN'
+import {typeAttribute as CnTypeAttribute} from '../document/zh-CN'
 import EnDocument from '../document/en-US'
+import {TypeAttribute} from '../document'
 
 import { generator, toKebabCase } from '../utils'
 import { ExtensionConfigutation, ExtensionLanguage } from '../'
@@ -12,6 +14,7 @@ export class ElementHoverProvier implements HoverProvider {
   private _token!: CancellationToken
   private tagReg: RegExp = /<([\w-]+)\s*/g
   private attrReg: RegExp = /(?:\(|\s*)([\w-]+)=?/
+  private typeReg: RegExp = /type=\"([^\"]*)\"/
   private instance: Record<string, null | undefined | Hover> = {}
 
   provideHover(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Hover> {
@@ -66,6 +69,15 @@ export class ElementHoverProvier implements HoverProvider {
     let start = txt.lastIndexOf(' ', this._position.character) + 1
     let parsedTxt = this._document.getText(new Range(this._position.line, start, this._position.line, end))
     return this.matchAttr(this.attrReg, parsedTxt)
+  }
+
+  getFormulateType(): string {
+    let txt = this.getTextAfterPosition(this._position)
+    let match: RegExpExecArray | null
+    if( match =this.typeReg.exec(txt)) {
+      return match[1]
+    }
+    return ''
   }
 
   /**
@@ -174,22 +186,35 @@ export class ElementHoverProvier implements HoverProvider {
    */
   createHoverInstance(language: ExtensionLanguage, tag: string, attr: string, range: Range): null | Hover {
     let document: Record<string, any>
+    let typeAttribute: TypeAttribute[]
     if (language === ExtensionLanguage.en) {
       document = EnDocument
+      typeAttribute = []
     } else {
       document = CnDocument
+      typeAttribute = CnTypeAttribute
     }
     if (tag === attr) {
       attr = ''
     }
-    
+    let formulateType = this.getFormulateType();
+    //console.log(formulateType)
 
     if (!Object.prototype.hasOwnProperty.call(document, tag)) {
       return null
     }
 
-    const tagDocument = document[tag]
-    const attributes = tagDocument.attributes.find(res=>{
+    let tagDocument = document[tag].attributes
+
+    if(formulateType){
+      let typeItem = typeAttribute.find(res=>{
+        return res.name === formulateType
+      })
+      if(typeItem){
+        tagDocument = tagDocument.concat(typeItem.attributes)
+      }
+    }
+    const attributes = tagDocument.find(res=>{
       return res.name === attr
     })
     if(attributes===undefined){

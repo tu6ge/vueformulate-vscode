@@ -12,10 +12,10 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
   private _position!: Position
   private token!: CancellationToken
   private tagReg: RegExp = /<([\w-]+)\s*/g
-  private attrReg: RegExp = /(?:\(|\s*)([\w-]+)=['"][^'"]*/
+  private attrReg: RegExp = /(?:|\s*)([\w-]+)=['"][^'"]*/
   private tagStartReg: RegExp = /<([\w-]*)$/
   private pugTagStartReg: RegExp = /^\s*[\w-]*$/
-  private typeReg: RegExp = /type=\"(.*)\"/
+  private typeReg: RegExp = /type=\"([^\"]*)\"/
   private size!: number
   private quotes!: string
 
@@ -145,17 +145,31 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
    * @param tag 标签
    * @param attr 属性
    */
-  getAttrValues(tag: string, attr: string): string[] {
+  getAttrValues(tag: string, attr: string, formulateType: string): string[] {
     const config = workspace.getConfiguration().get<ExtensionConfigutation>('vueformulate-helper')
     const language = config?.language || ExtensionLanguage.cn
     let document: Record<string, any>
+    let typeAttribute: TypeAttribute[]
     if (language === ExtensionLanguage.en) {
       document = EnDocument
+      typeAttribute = []
     } else {
       document = CnDocument
+      typeAttribute = CnTypeAttribute
     }
-    const attributes: DocumentAttribute[] = document[tag].attributes || []
+    let attributes: DocumentAttribute[] = document[tag].attributes || []
+    if(formulateType){
+      let typeItem = typeAttribute.find(res=>{
+        return res.name === formulateType
+      })
+      if(typeItem){
+        attributes = attributes.concat(typeItem.attributes)
+        //console.log(attributes)
+      }
+    }
+    
     const attribute: DocumentAttribute | undefined = attributes.find((attribute) => attribute.name === attr)
+    
     if (!attribute) {
       return []
     }
@@ -169,9 +183,9 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
    * @param tag 标签
    * @param attr 属性
    */
-  getAttrValueCompletionItems(tag: string, attr: string): CompletionItem[] {
+  getAttrValueCompletionItems(tag: string, attr: string, formulateType: string): CompletionItem[] {
     let completionItems: CompletionItem[] = []
-    const values = this.getAttrValues(tag, attr)
+    const values = this.getAttrValues(tag, attr, formulateType)
     values.forEach((value) => {
       if (/\w+/.test(value)) {
         completionItems.push({
@@ -342,7 +356,7 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
       return null
     } else if (this.isAttrValueStart(tag, attr)) {
       // 如果是属性值的开始
-      return this.getAttrValueCompletionItems(tag.text, attr)
+      return this.getAttrValueCompletionItems(tag.text, attr, formulateType)
     } else if (this.isEventStart(tag)) {
       // 优先判定事件
       return this.getEventCompletionItems(tag.text)

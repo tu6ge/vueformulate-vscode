@@ -1,26 +1,26 @@
 <p>
-  <h1 align="center">Element UI Helper</h1>
+  <h1 align="center">Vue Formulate Helper</h1>
 </p>
 
 <p align="center">
-  <a href="https://github.com/HULANG-BTB/element-ui-helper/issues">
-    <img src="https://img.shields.io/github/issues/HULANG-BTB/element-ui-helper">
+  <a href="https://github.com/tu6ge/vueformulate-vscode/issues">
+    <img src="https://img.shields.io/github/issues/tu6ge/vueformulate-vscode">
   </a>
-  <a href="https://github.com/HULANG-BTB/element-ui-helper.git">
-    <img src="https://img.shields.io/github/forks/HULANG-BTB/element-ui-helper">
+  <a href="https://github.com/tu6ge/vueformulate-vscode.git">
+    <img src="https://img.shields.io/github/forks/tu6ge/vueformulate-vscode">
   </a>
-  <a href="https://github.com/HULANG-BTB/element-ui-helper.git">
-    <img src="https://img.shields.io/github/stars/HULANG-BTB/element-ui-helper">
+  <a href="https://github.com/tu6ge/vueformulate-vscode.git">
+    <img src="https://img.shields.io/github/stars/tu6ge/vueformulate-vscode">
   </a>
-  <a href="https://github.com/HULANG-BTB/element-ui-helper/blob/master/LICENSE.MD">
-    <img src="https://img.shields.io/github/license/HULANG-BTB/element-ui-helper">
+  <a href="https://github.com/tu6ge/vueformulate-vscode/blob/master/LICENSE.MD">
+    <img src="https://img.shields.io/github/license/tu6ge/vueformulate-vscode">
   </a>
   <br>
 </p>
 
-> Element-UI-Helper is a VS Code extension for Element-UI.
+> Vue Formulate Helper is a VS Code extension for Vue Formulate.
 
-Element-UI is a great library. More and more projects use it. So, For helping developer write more efficient by Element-UI, Element-UI-Helper is born.This is not an official project, but all the documents are from the official website.
+Vue Formulate
 
 ## Features
 
