@@ -55,7 +55,7 @@ export interface InputType {
 
 export interface InputValidation {
   name: string,
-  description: string,
+  description: string | string[],
   link?: string
 }
 

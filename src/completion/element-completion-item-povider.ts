@@ -18,6 +18,7 @@ import {typeAttribute as CnTypeAttribute, typeValues as CnTypeValues, validation
 import EnDocument from '../document/en-US'
 import { ExtensionConfigutation, ExtensionLanguage } from '..'
 import { DocumentAttribute, DocumentEvent, DocumentMethod, ElDocument, TypeAttribute,InputType, InputValidation } from '@/document'
+import { TextDecoder } from 'node:util'
 
 export class ElementCompletionItemProvider implements CompletionItemProvider<CompletionItem> {
   private _document!: TextDocument
@@ -28,6 +29,7 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
   private tagStartReg: RegExp = /<([\w-]*)$/
   private pugTagStartReg: RegExp = /^\s*[\w-]*$/
   private typeReg: RegExp = /type=\"([^\"]*)\"/
+  private validationContinue: RegExp = /validation\=\"([\w\|\:\,]+)|$/  
   private size!: number
   private quotes!: string
   private formulateDocument: Record<string, any>
@@ -53,6 +55,10 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
       this.typeValues = CnTypeValues
       this.validations = CnValidations
     }
+  }
+
+  replaceSiteUrl(description: string): string{
+    return description.replaceAll('__DOCS_SITE__', this.docsSite)
   }
 
   /**
@@ -98,6 +104,14 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
     let start = txt.lastIndexOf(' ', end) + 1
     let parsedTxt = this._document.getText(new Range(this._position.line, start, this._position.line, end))
     return this.matchAttr(this.attrReg, parsedTxt)
+  }
+
+  /**
+   * 获取前置验证器
+   */
+   getValidationPreValue(): boolean {
+    let txt = this.getTextBeforePosition(this._position)
+    return !!txt[0]
   }
 
   /**
@@ -233,6 +247,11 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
     return completionItems
   }
 
+  /**
+   * 计算表单域类型的文档
+   * @param typeValue 表单域类型
+   * @returns 
+   */
   private getAttrValueMarkdownByTypeValue(typeValue: string): MarkdownString {
     let typeInfo: InputType | undefined
     typeInfo = this.typeValues.find(res=>{
@@ -244,13 +263,18 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
       return documentation
     }
     
-    documentation.appendMarkdown(typeInfo.description)
+    documentation.appendMarkdown(this.replaceSiteUrl(typeInfo.description))
     documentation.appendMarkdown(` 查看 [文档](${this.docsSite}${typeInfo.link}) 了解更多`)
     return documentation
   }
 
+  /**
+   * 计算验证器的文档
+   * @param validation 验证器
+   * @returns 
+   */
   private getAttrValueMarkdownByValidation(validation: string): MarkdownString {
-    let typeInfo: InputType | undefined
+    let typeInfo: InputValidation | undefined
     typeInfo = this.validations.find(res=>{
       return res.name === validation
     })
@@ -259,9 +283,18 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
     if(typeInfo === undefined){
       return documentation
     }
+    if(typeof typeInfo.description === 'string'){
+      documentation.appendMarkdown(this.replaceSiteUrl(typeInfo.description))
+    }else{
+      typeInfo.description.map(res=>{
+        documentation.appendMarkdown(this.replaceSiteUrl(res))
+      })
+    }
     
-    documentation.appendMarkdown(typeInfo.description)
-    documentation.appendMarkdown(` 查看 [文档](${this.docsSite}${typeInfo.link}) 了解更多`)
+    if(typeInfo.link){
+      documentation.appendMarkdown(` 查看 [文档](${this.docsSite}${typeInfo.link}) 了解更多`)
+    }
+    
     return documentation
   }
 
