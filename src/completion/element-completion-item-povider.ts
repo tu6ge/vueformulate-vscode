@@ -47,7 +47,7 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
 
   constructor() {
     const config = workspace.getConfiguration().get<ExtensionConfigutation>('vueformulate-helper')
-    const language = config?.language || ExtensionLanguage.cn
+    const language = config?.language || ExtensionLanguage.en
     this.currentLang = language
     if (language === ExtensionLanguage.en) {
       this.formulateDocument = EnDocument
