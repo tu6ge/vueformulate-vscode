@@ -1,7 +1,7 @@
 {
 	"name": "vueformulate-helper",
 	"displayName": "Vue Formulate Helper",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "Vue Formulate vscode snippets",
 	"publisher": "tu6ge",
 	"license": "MIT",
