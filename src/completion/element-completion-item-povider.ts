@@ -18,6 +18,7 @@ import {
 import CnDocument from '../document/zh-CN'
 import { typeAttribute as CnTypeAttribute, typeValues as CnTypeValues, validations as CnValidations } from '../document/zh-CN'
 import EnDocument from '../document/en-US'
+import { typeAttribute as EnTypeAttribute, typeValues as EnTypeValues, validations as EnValidations } from '../document/en-US'
 import { ExtensionConfigutation, ExtensionLanguage } from '..'
 import { DocumentAttribute, DocumentEvent, DocumentMethod, ElDocument, TypeAttribute, InputType, InputValidation } from '@/document'
 import { TextDecoder } from 'node:util'
@@ -39,27 +40,42 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
   private docsSite: string
   private typeValues: InputType[]
   private validations: InputValidation[]
+  private lang = {
+    attr:'',
+  }
+  private currentLang:string
 
   constructor() {
     const config = workspace.getConfiguration().get<ExtensionConfigutation>('vueformulate-helper')
     const language = config?.language || ExtensionLanguage.cn
+    this.currentLang = language
     if (language === ExtensionLanguage.en) {
       this.formulateDocument = EnDocument
-      this.typeAttribute = []
+      this.typeAttribute = EnTypeAttribute
       this.docsSite = 'https://tu6ge.github.io/vueformulate.com'
-      this.typeValues = []
-      this.validations = []
+      this.typeValues = EnTypeValues
+      this.validations = EnValidations
+      this.lang.attr = 'attribute'
     } else {
       this.formulateDocument = CnDocument
       this.typeAttribute = CnTypeAttribute
       this.docsSite = 'https://tu6ge.github.io/vueformulate.com/zh'
       this.typeValues = CnTypeValues
       this.validations = CnValidations
+      this.lang.attr = '属性'
     }
   }
 
   replaceSiteUrl(description: string): string {
     return description.replaceAll('__DOCS_SITE__', this.docsSite)
+  }
+
+  markdownDocsLink(links:string): string{
+    if(this.currentLang === ExtensionLanguage.en){
+      return ` @see [documents](${this.docsSite}${links})`
+    }else{
+      return ` 查看 [文档](${this.docsSite}${links}) 了解更多`
+    }
   }
 
   /**
@@ -268,7 +284,10 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
     }
 
     documentation.appendMarkdown(this.replaceSiteUrl(typeInfo.description))
-    documentation.appendMarkdown(` 查看 [文档](${this.docsSite}${typeInfo.link}) 了解更多`)
+    if(typeInfo.link){
+      documentation.appendMarkdown(this.markdownDocsLink(typeInfo.link))
+    }
+    
     return documentation
   }
 
@@ -295,8 +314,8 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
       })
     }
 
-    if (typeInfo.link) {
-      documentation.appendMarkdown(` 查看 [文档](${this.docsSite}${typeInfo.link}) 了解更多`)
+    if(typeInfo.link){
+      documentation.appendMarkdown(this.markdownDocsLink(typeInfo.link))
     }
 
     return documentation
@@ -396,8 +415,11 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
       completionItems.push({
         label: `${attribute.name}`,
         sortText: `0${attribute.name}`,
-        detail: `${tag} 属性`,
-        documentation: attribute.description,
+        detail: `${tag} ${this.lang.attr}`,
+        documentation: 
+          new MarkdownString(this.replaceSiteUrl(attribute.description))
+          .appendMarkdown('\n\n')
+          .appendMarkdown(this.markdownDocsLink(attribute.link || '')),
         kind: CompletionItemKind.Value,
         insertText: attribute.name,
         range

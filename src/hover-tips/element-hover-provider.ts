@@ -2,6 +2,7 @@ import { HoverProvider, TextDocument, Position, CancellationToken, ProviderResul
 import CnDocument from '../document/zh-CN'
 import { typeAttribute as CnTypeAttribute } from '../document/zh-CN'
 import EnDocument from '../document/en-US'
+import { typeAttribute as EnTypeAttribute } from '../document/en-US'
 import { TypeAttribute } from '../document'
 
 import { generator, toKebabCase } from '../utils'
@@ -19,18 +20,28 @@ export class ElementHoverProvier implements HoverProvider {
   private formulateDocument: Record<string, any>
   private typeAttribute: TypeAttribute[]
   private docsSite: string
+  private currentLang:string
 
   constructor() {
     const config = workspace.getConfiguration().get<ExtensionConfigutation>('vueformulate-helper')
     const language = config?.language || ExtensionLanguage.cn
+    this.currentLang = language
     if (language === ExtensionLanguage.en) {
       this.formulateDocument = EnDocument
-      this.typeAttribute = []
+      this.typeAttribute = EnTypeAttribute
       this.docsSite = 'https://tu6ge.github.io/vueformulate.com'
     } else {
       this.formulateDocument = CnDocument
       this.typeAttribute = CnTypeAttribute
       this.docsSite = 'https://tu6ge.github.io/vueformulate.com/zh'
+    }
+  }
+
+  markdownDocsLink(links:string): string{
+    if(this.currentLang === ExtensionLanguage.en){
+      return ` @see [documents](${this.docsSite}${links})`
+    }else{
+      return ` 查看 [文档](${this.docsSite}${links}) 了解更多`
     }
   }
 
@@ -260,13 +271,13 @@ export class ElementHoverProvier implements HoverProvider {
 
     markdown.appendMarkdown(`**${attributes.description}**\n`)
     markdown.appendMarkdown('**********\n')
-    markdown.appendMarkdown(`属性类型是 ${attributes.type}`)
+    markdown.appendMarkdown(`${this.currentLang===ExtensionLanguage.en?'attr type is':'属性类型是'} ${attributes.type}`)
     if (attributes.value) {
-      markdown.appendMarkdown(`，可用的属性值有: ${attributes.value}`)
+      markdown.appendMarkdown(`，${this.currentLang===ExtensionLanguage.en?'available attr values is':'可用的属性值有'}: ${attributes.value}`)
     }
     markdown.appendMarkdown('\n\n')
     if (attributes.link) {
-      markdown.appendMarkdown(`[文档链接](${this.docsSite}${attributes.link})`)
+      markdown.appendMarkdown(this.markdownDocsLink(attributes.link))
     }
     hoverMarkdownStrings.push(markdown)
     return new Hover(hoverMarkdownStrings, range)
@@ -315,7 +326,7 @@ export class ElementHoverProvier implements HoverProvider {
     markdown.appendMarkdown('**********\n')
     markdown.appendMarkdown('\n\n')
     if (events.link) {
-      markdown.appendMarkdown(`[文档链接](${this.docsSite}${events.link})`)
+      markdown.appendMarkdown(this.markdownDocsLink(events.link))
     }
     hoverMarkdownStrings.push(markdown)
     return new Hover(hoverMarkdownStrings, range)

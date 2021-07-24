@@ -158,7 +158,7 @@ export const validations: InputValidation[] = [
   {
     name: 'min',
     description: [
-      '检查一个 `Number` 的值, 或一个 `String` 或 `Array` 的长度是否大于某个值。默认值是 `10` \n',
+      '检查一个 `Number` 的值, 或一个 `String` 或 `Array` 的长度是否大于某个值。默认值是 `1` \n',
       '可以使用第二个参数来强制验证器验证 `length` 或 `value`。\n',
       '******\n',
       '*提示*',
