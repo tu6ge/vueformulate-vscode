@@ -12,7 +12,8 @@ import {
   CompletionItemKind,
   workspace,
   MarkdownString,
-  SnippetString
+  SnippetString,
+  env
 } from 'vscode'
 
 import CnDocument from '../document/zh-CN'
@@ -47,9 +48,9 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
 
   constructor() {
     const config = workspace.getConfiguration().get<ExtensionConfigutation>('vueformulate-helper')
-    const language = config?.language || ExtensionLanguage.en
-    this.currentLang = language
-    if (language === ExtensionLanguage.en) {
+
+    this.currentLang = env.language //zh-cn en
+    if (env.language !== 'zh-cn') {
       this.formulateDocument = EnDocument
       this.typeAttribute = EnTypeAttribute
       this.docsSite = 'https://tu6ge.github.io/vueformulate.com'
@@ -71,7 +72,7 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
   }
 
   markdownDocsLink(links:string): string{
-    if(this.currentLang === ExtensionLanguage.en){
+    if(this.currentLang !== 'zh-cn'){
       return ` @see [documents](${this.docsSite}${links})`
     }else{
       return ` 查看 [文档](${this.docsSite}${links}) 了解更多`

@@ -1,4 +1,15 @@
-import { HoverProvider, TextDocument, Position, CancellationToken, ProviderResult, Hover, workspace, MarkdownString, Range } from 'vscode'
+import { 
+  HoverProvider, 
+  TextDocument, 
+  Position, 
+  CancellationToken, 
+  ProviderResult, 
+  Hover, 
+  workspace, 
+  MarkdownString, 
+  Range,
+  env
+} from 'vscode'
 import CnDocument from '../document/zh-CN'
 import { typeAttribute as CnTypeAttribute } from '../document/zh-CN'
 import EnDocument from '../document/en-US'
@@ -23,10 +34,8 @@ export class ElementHoverProvier implements HoverProvider {
   private currentLang:string
 
   constructor() {
-    const config = workspace.getConfiguration().get<ExtensionConfigutation>('vueformulate-helper')
-    const language = config?.language || ExtensionLanguage.en
-    this.currentLang = language
-    if (language === ExtensionLanguage.en) {
+    this.currentLang = env.language
+    if (env.language !== 'zh-cn') {
       this.formulateDocument = EnDocument
       this.typeAttribute = EnTypeAttribute
       this.docsSite = 'https://tu6ge.github.io/vueformulate.com'
@@ -38,7 +47,7 @@ export class ElementHoverProvier implements HoverProvider {
   }
 
   markdownDocsLink(links:string): string{
-    if(this.currentLang === ExtensionLanguage.en){
+    if(this.currentLang === 'en'){
       return ` @see [documents](${this.docsSite}${links})`
     }else{
       return ` 查看 [文档](${this.docsSite}${links}) 了解更多`
@@ -271,9 +280,9 @@ export class ElementHoverProvier implements HoverProvider {
 
     markdown.appendMarkdown(`**${attributes.description}**\n`)
     markdown.appendMarkdown('**********\n')
-    markdown.appendMarkdown(`${this.currentLang===ExtensionLanguage.en?'attr type is':'属性类型是'} ${attributes.type}`)
+    markdown.appendMarkdown(`${this.currentLang !== 'zh-cn'?'attr type is':'属性类型是'} ${attributes.type}`)
     if (attributes.value) {
-      markdown.appendMarkdown(`，${this.currentLang===ExtensionLanguage.en?'available attr values is':'可用的属性值有'}: ${attributes.value}`)
+      markdown.appendMarkdown(`，${this.currentLang!== 'zh-cn'?'available attr values is':'可用的属性值有'}: ${attributes.value}`)
     }
     markdown.appendMarkdown('\n\n')
     if (attributes.link) {
