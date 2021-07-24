@@ -1,7 +1,7 @@
 {
 	"name": "vueformulate-helper",
 	"displayName": "Vue Formulate Helper",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Vue Formulate vscode snippets",
 	"publisher": "tu6ge",
 	"license": "MIT",
@@ -23,7 +23,7 @@
 	"contributes": {
 		"configuration": {
 			"type": "object",
-			"title": "Element UI Helper Config",
+			"title": "Vue Formulate Helper Config",
 			"properties": {
 				"vueformulate-helper.language": {
 					"type": "string",

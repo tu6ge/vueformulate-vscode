@@ -38,11 +38,11 @@ Vue Formulate
 
 ## Contribution
 
-If you want to help improve this project, Please fork and initiate. a pull request after you fix some bugs or finished some new features. Your pull request will make Element-UI-Helper better.
+If you want to help improve this project, Please fork and initiate. a pull request after you fix some bugs or finished some new features. Your pull request will make Vue Formulate Helper better.
 
 ## LICENSE
 
-![https://img.shields.io/github/license/HULANG-BTB/element-ui-helper](https://img.shields.io/github/license/HULANG-BTB/element-ui-helper)
+![https://img.shields.io/github/license/tu6ge/vueformulate-vscode](https://img.shields.io/github/license/tu6ge/vueformulate-vscode)
 
 ## **Enjoy yourself!**
 
