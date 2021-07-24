@@ -1,4 +1,6 @@
 
+import {SnippetString} from 'vscode'
+
 export interface DocumentAttribute {
   // 参数名称
   name: string
@@ -56,7 +58,8 @@ export interface InputType {
 export interface InputValidation {
   name: string,
   description: string | string[],
-  link?: string
+  link?: string,
+  insertText?: SnippetString
 }
 
 export type DocumentScopedSlot = DocumentSlot

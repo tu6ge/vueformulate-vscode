@@ -11,6 +11,7 @@ import { CompletionItemProvider,
   CompletionItemKind, 
   workspace,
   MarkdownString,
+  SnippetString
 } from 'vscode'
 
 import CnDocument from '../document/zh-CN'
@@ -228,18 +229,21 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
     values.forEach((value) => {
       if (/\w+/.test(value)) {
         let documentation:MarkdownString = new MarkdownString('', true)
+
+        let insertText:SnippetString | undefined;
         
         if(attr === 'type'){
           documentation = this.getAttrValueMarkdownByTypeValue(value)
         }else if(attr === 'validation'){
           documentation = this.getAttrValueMarkdownByValidation(value)
+          insertText = this.getAttrValueInsertTextByValidation(value)
         }
         completionItems.push({
           label: `${value}`,
           sortText: `0${value}`,
           detail: `${tag}-${attr}`,
           kind: CompletionItemKind.Value,
-          insertText: value,
+          insertText: insertText || value,
           documentation: documentation,
         })
       }
@@ -296,6 +300,23 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
     }
     
     return documentation
+  }
+
+  /**
+   * 计算验证器的文档
+   * @param validation 验证器
+   * @returns 
+   */
+   private getAttrValueInsertTextByValidation(validation: string): SnippetString|undefined {
+    let typeInfo: InputValidation | undefined
+    typeInfo = this.validations.find(res=>{
+      return res.name === validation
+    })
+
+    if(typeInfo === undefined || typeInfo.insertText === undefined){
+      return undefined
+    }
+    return typeInfo.insertText
   }
 
   /**
@@ -408,12 +429,19 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
       const startPos = new Position(this._position.line, start)
       const endPos = new Position(this._position.line, end)
       const range = new Range(startPos, endPos)
+
+      let snippetString:SnippetString = new SnippetString()
+      snippetString.appendText(`${key}`)
+      snippetString.appendTabstop()
+      snippetString.appendText(`>`)
+      snippetString.appendTabstop()
+      snippetString.appendText(`</${key}>`)
       completionItems.push({
         label: `${key}`,
         sortText: `0${key}`,
         detail: 'Vue Formulate Tag',
         kind: CompletionItemKind.Value,
-        insertText: `${key}></${key}>`,
+        insertText: snippetString,
         range
       })
     })

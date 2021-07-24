@@ -34,6 +34,22 @@ export const attributes: DocumentAttribute[] = [
     default: '—',
     link: '/guide/forms/'
   },
+  {
+    name: 'schema',
+    description: '构造器',
+    type: 'object',
+    value: '',
+    default: '—',
+    link: '/guide/forms/generating-forms/'
+  },
+  {
+    name: 'form-errors',
+    description: '构造器',
+    type: 'array',
+    value: '',
+    default: '—',
+    link: '/guide/forms/error-handling/#表单错误'
+  },
 ]
 
 export const events: DocumentEvent[] = [

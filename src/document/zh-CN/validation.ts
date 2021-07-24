@@ -1,4 +1,14 @@
 import {InputValidation} from '@/document'
+import { SnippetString } from 'vscode'
+
+function numberLimitInsertText(value:string): SnippetString{
+  let maxMinInsertText: SnippetString = new SnippetString
+  maxMinInsertText.appendText(`${value}:`)
+  maxMinInsertText.appendTabstop()
+  maxMinInsertText.appendText(',')
+  maxMinInsertText.appendChoice(['length','value'])
+  return maxMinInsertText
+}
 
 export const validations: InputValidation[] = [
   {
@@ -12,18 +22,21 @@ export const validations: InputValidation[] = [
     该值必须是 Date 对象或可被 Date.parse 求值的字符串。
      [在 MDN 上阅读更多 Date.parse 信息](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse)`,
     link:'/guide/validation/#after',
+    insertText: new SnippetString('after:')
   },
   {
     name:'alpha',
     description: `检查值是否仅为字母字符。有两个字符集 \`latin\` 和 \`default\`. 前者是严格 \`[a-zA-Z]\` 规则，
     而 \`default\` 集包括最重音符号，如: \`ä\`, \`ù\`, 或 \`ś\`.`,
     link:'/guide/validation/#alpha',
+    insertText: new SnippetString('alpha:').appendChoice(['default','latin'])
   },
   {
     name:'alphanumeric',
     description: `检查输入的值是否仅由字母字符或数字组成。对于字母部分，您可以通过 \`default\` 或 \`latin\` - 
     请参阅 [alpha](__DOCS_SITE__/guide/validation/#alpha)`,
     link:'/guide/validation/#alpha',
+    insertText: new SnippetString('alphanumeric:').appendChoice(['default','latin'])
   },
   {
     name:'bail',
@@ -36,6 +49,7 @@ export const validations: InputValidation[] = [
     该值必须是 Date 对象或可被 Date.parse 求值的字符串。
      [在 MDN 上阅读更多 Date.parse 信息](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse)`,
     link:'/guide/validation/#before',
+    insertText: new SnippetString('before:')
   },
   {
     name:'between',
@@ -50,6 +64,13 @@ export const validations: InputValidation[] = [
       '如果你希望限制日期在两个日期之间，请考虑使用 \`before\` 和 \`after\` 的验证规则。\n\n'
     ],
     link:'/guide/validation/#between',
+    insertText: 
+      new SnippetString('between:')
+      .appendTabstop()
+      .appendText(',')
+      .appendTabstop()
+      .appendText(',')
+      .appendChoice(['value','length'])
   },
   {
     name:'confirm',
@@ -81,6 +102,13 @@ export const validations: InputValidation[] = [
       '小心！此验证规则将验证是否遵循您请求的格式，但不会验证日期是否存在（例如 `02/31/2008`）。\n'
     ],
     link:'/guide/validation/#date',
+    insertText:
+      new SnippetString('date:')
+      .appendChoice(['MM','M','DD','D','YY','YYYY'])
+      .appendText('/')
+      .appendChoice(['MM','M','DD','D','YY','YYYY'])
+      .appendText('/')
+      .appendChoice(['MM','M','DD','D','YY','YYYY'])
   },
   {
     name:'email',
@@ -91,11 +119,15 @@ export const validations: InputValidation[] = [
     name:'ends_with',
     description:`检查输入的值是否以提供的选项之一结束`,
     link:'/guide/validation/#ends_with',
+    insertText:
+      new SnippetString('ends_with:')
   },
   {
     name:'in',
     description:`检查输入的值是否包含在选项数组中。`,
     link:'/guide/validation/#in',
+    insertText:
+      new SnippetString('in:')
   },
   {
     name:'matches',
@@ -106,6 +138,8 @@ export const validations: InputValidation[] = [
       '字符， 您必须使用备用的 [数组语法](__DOCS_SITE__/guide/validation/#数组语法)。'
     ],
     link:'/guide/validation/#matches',
+    insertText:
+      new SnippetString('matches:')
   },
   {
     name:'max',
@@ -117,6 +151,7 @@ export const validations: InputValidation[] = [
       '评估 `Array` 时第二个参数（长度/值）时将被忽略。'
     ],
     link:'/guide/validation/#max',
+    insertText: numberLimitInsertText('max')
   },
   {
     name:'mime',
@@ -128,6 +163,14 @@ export const validations: InputValidation[] = [
       '使用 `multiple` 选项的属性验证字段时，如果任何选定的文件不是正确的 `mime`，验证将失败。'
     ],
     link:'/guide/validation/#mime',
+    insertText:
+      new SnippetString('mime:')
+      .appendChoice([
+        'image/jpeg,image/png',
+        'image/jpeg',
+        'image/png',
+        'application/pdf',
+      ])
   },
   {
     name:'min',
@@ -139,11 +182,13 @@ export const validations: InputValidation[] = [
       '评估 `Array` 时第二个参数（长度/值）时将被忽略。'
     ],
     link:'/guide/validation/#min',
+    insertText: numberLimitInsertText('min')
   },
   {
     name:'not',
     description: '要求输入的数据与一组预定义的任意的值都不匹配。',
     link:'/guide/validation/#not',
+    insertText: new SnippetString('not:')
   },
   {
     name:'number',
@@ -159,11 +204,16 @@ export const validations: InputValidation[] = [
     name:'required',
     description: '检查输入值是否为空。',
     link:'/guide/validation/#required',
+    insertText: 
+      new SnippetString('required')
+      .appendPlaceholder(':trim')
   },
   {
     name:'starts_with',
     description: '检查输入的值是否以提供的选项之一开头',
     link:'/guide/validation/#starts_with',
+    insertText: 
+      new SnippetString('starts_with')
   },
   {
     name:'url',
