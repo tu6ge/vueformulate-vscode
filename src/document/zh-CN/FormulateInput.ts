@@ -1,7 +1,6 @@
 import { ElDocument } from '@/document'
-import { DocumentAttribute,DocumentEvent } from '@/document'
+import { DocumentAttribute, DocumentEvent } from '@/document'
 import { TypeAttribute } from '@/document'
-
 
 export const attributes: DocumentAttribute[] = [
   {
@@ -10,7 +9,7 @@ export const attributes: DocumentAttribute[] = [
     type: 'number',
     value: '200',
     default: '200',
-    link:'/guide/inputs/#props'
+    link: '/guide/inputs/#props'
   },
   {
     name: 'disableErrors',
@@ -18,7 +17,7 @@ export const attributes: DocumentAttribute[] = [
     type: 'boolean',
     value: 'true, false',
     default: 'true',
-    link:'/guide/inputs/#props'
+    link: '/guide/inputs/#props'
   },
   {
     name: 'error',
@@ -26,7 +25,7 @@ export const attributes: DocumentAttribute[] = [
     type: 'string',
     value: '',
     default: '-',
-    link:'/guide/inputs/#props'
+    link: '/guide/inputs/#props'
   },
   {
     name: 'errors',
@@ -34,7 +33,7 @@ export const attributes: DocumentAttribute[] = [
     type: 'string',
     value: '',
     default: '-',
-    link:'/guide/inputs/#props'
+    link: '/guide/inputs/#props'
   },
   {
     name: 'error-behavior',
@@ -42,7 +41,7 @@ export const attributes: DocumentAttribute[] = [
     type: 'string',
     value: 'blur / submit / live / value',
     default: 'blur',
-    link:'/guide/validation/#显示验证'
+    link: '/guide/validation/#显示验证'
   },
   {
     name: 'help-position',
@@ -50,7 +49,7 @@ export const attributes: DocumentAttribute[] = [
     type: 'string',
     value: 'after / before',
     default: 'after',
-    link:'/guide/inputs/#props'
+    link: '/guide/inputs/#props'
   },
   {
     name: 'help',
@@ -58,7 +57,7 @@ export const attributes: DocumentAttribute[] = [
     type: 'string',
     value: '',
     default: '',
-    link:'/guide/inputs/#props'
+    link: '/guide/inputs/#props'
   },
   {
     name: 'id',
@@ -66,7 +65,7 @@ export const attributes: DocumentAttribute[] = [
     type: 'string',
     value: '',
     default: '',
-    link:'/guide/inputs/#props'
+    link: '/guide/inputs/#props'
   },
   {
     name: 'keep-model-data',
@@ -74,7 +73,7 @@ export const attributes: DocumentAttribute[] = [
     type: 'boolean',
     value: 'true, false',
     default: 'false',
-    link:'/guide/inputs/#props'
+    link: '/guide/inputs/#props'
   },
   {
     name: 'label',
@@ -82,7 +81,7 @@ export const attributes: DocumentAttribute[] = [
     type: 'string',
     value: '',
     default: '—',
-    link:'/guide/inputs/#props'
+    link: '/guide/inputs/#props'
   },
   {
     name: 'label‑position',
@@ -90,7 +89,7 @@ export const attributes: DocumentAttribute[] = [
     type: 'string',
     value: 'before / after',
     default: '—',
-    link:'/guide/inputs/#props'
+    link: '/guide/inputs/#props'
   },
   {
     name: 'name',
@@ -98,9 +97,9 @@ export const attributes: DocumentAttribute[] = [
     type: 'string',
     value: '',
     default: '—',
-    link:'/guide/inputs/#props'
+    link: '/guide/inputs/#props'
   },
-  
+
   {
     name: 'placeholder',
     description: '占位符',
@@ -114,23 +113,25 @@ export const attributes: DocumentAttribute[] = [
     type: 'boolean',
     value: 'true, false',
     default: 'false',
-    link:'/guide/inputs/#props'
+    link: '/guide/inputs/#props'
   },
   {
     name: 'type',
     description: '类型',
     type: 'string',
-    value: 'text / button / submit / checkbox / radio / file / image / group / select / range / color / date / datetime-local / email / hidden / month / number / password / search / tel / time / url / week',
+    value:
+      'text / button / submit / checkbox / radio / file / image / group / select / range / color / date / datetime-local / email / hidden / month / number / password / search / tel / time / url / week',
     default: '—',
-    link:'/guide/inputs/#props'
+    link: '/guide/inputs/#props'
   },
   {
     name: 'validation',
     description: '验证器',
     type: 'string / array',
-    value: 'accepted / after / alpha / alphanumeric / bail / before / between / confirm / date / email / ends_with / in / matches / max / mime / min / not / number / optional / required / starts_with / url',
+    value:
+      'accepted / after / alpha / alphanumeric / bail / before / between / confirm / date / email / ends_with / in / matches / max / mime / min / not / number / optional / required / starts_with / url',
     default: '—',
-    link:'/guide/validation/#可用的验证规则'
+    link: '/guide/validation/#可用的验证规则'
   },
   {
     name: 'validation-rules',
@@ -138,26 +139,26 @@ export const attributes: DocumentAttribute[] = [
     type: 'array',
     value: '',
     default: '—',
-    link:'/guide/validation/#自定义验证规则'
+    link: '/guide/validation/#自定义验证规则'
   },
-  
+
   {
     name: 'validation‑messages',
     description: '自定义消息',
     type: 'string',
     value: '',
     default: '—',
-    link:'/guide/validation/#自定义验证消息'
+    link: '/guide/validation/#自定义验证消息'
   },
   {
     name: 'validation‑name',
     description: '消息中的名称',
     type: 'string',
-    value: "validationName / name / label / type",
+    value: 'validationName / name / label / type',
     default: '—',
-    link:'/guide/validation/#验证名称策略'
+    link: '/guide/validation/#验证名称策略'
   },
-  
+
   {
     name: 'value',
     description: '默认值',
@@ -171,7 +172,7 @@ export const attributes: DocumentAttribute[] = [
     type: 'string / number',
     value: '',
     default: '—'
-  },
+  }
 ]
 
 const boxAttributes: DocumentAttribute[] = [
@@ -182,7 +183,7 @@ const boxAttributes: DocumentAttribute[] = [
     value: '',
     default: '[]',
     link: '/guide/inputs/types/box/'
-  },
+  }
 ]
 
 const fileAttributes: DocumentAttribute[] = [
@@ -241,7 +242,7 @@ const fileAttributes: DocumentAttribute[] = [
     value: '',
     default: '',
     link: '/guide/inputs/types/file/'
-  },
+  }
 ]
 
 const fileEvents: DocumentEvent[] = [
@@ -280,21 +281,21 @@ export const typeAttribute: TypeAttribute[] = [
         description: '设为不可用',
         type: 'boolean',
         value: '',
-        default: '',
+        default: ''
       }
-    ],
+    ]
   },
   {
     name: 'checkbox',
-    attributes: boxAttributes,
+    attributes: boxAttributes
   },
   {
     name: 'radio',
-    attributes: boxAttributes,
+    attributes: boxAttributes
   },
   {
     name: 'select',
-    attributes: boxAttributes,
+    attributes: boxAttributes
   },
   {
     name: 'file',
@@ -364,7 +365,7 @@ export const typeAttribute: TypeAttribute[] = [
         value: '',
         default: '',
         link: '/guide/inputs/types/group/#为分组设置错误信息'
-      },
+      }
     ],
     events: [
       {
@@ -399,9 +400,9 @@ export const typeAttribute: TypeAttribute[] = [
         value: '',
         default: '100',
         link: '/guide/inputs/types/sliders/'
-      },
-    ],
-  },
+      }
+    ]
+  }
 ]
 
 export const events: DocumentEvent[] = [
@@ -428,7 +429,7 @@ export const events: DocumentEvent[] = [
     description: '失去焦点时触发，但包括表单域的 [上下文](__DOCS_SITE__/guide/inputs/#上下文对象) 作为有效负载',
     parameter: '(value: string)',
     link: '/guide/validation/#验证器事件'
-  },
+  }
 ]
 
 export const document: ElDocument = { attributes, events }

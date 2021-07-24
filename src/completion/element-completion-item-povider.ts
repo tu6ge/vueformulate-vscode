@@ -1,24 +1,25 @@
 import { TagObject } from '@/hover-tips'
-import { CompletionItemProvider, 
-  TextDocument, 
-  Position, 
-  CancellationToken, 
-  ProviderResult, 
-  Range, 
-  CompletionItem, 
-  CompletionContext, 
-  CompletionList, 
-  CompletionItemKind, 
+import {
+  CompletionItemProvider,
+  TextDocument,
+  Position,
+  CancellationToken,
+  ProviderResult,
+  Range,
+  CompletionItem,
+  CompletionContext,
+  CompletionList,
+  CompletionItemKind,
   workspace,
   MarkdownString,
   SnippetString
 } from 'vscode'
 
 import CnDocument from '../document/zh-CN'
-import {typeAttribute as CnTypeAttribute, typeValues as CnTypeValues, validations as CnValidations} from '../document/zh-CN'
+import { typeAttribute as CnTypeAttribute, typeValues as CnTypeValues, validations as CnValidations } from '../document/zh-CN'
 import EnDocument from '../document/en-US'
 import { ExtensionConfigutation, ExtensionLanguage } from '..'
-import { DocumentAttribute, DocumentEvent, DocumentMethod, ElDocument, TypeAttribute,InputType, InputValidation } from '@/document'
+import { DocumentAttribute, DocumentEvent, DocumentMethod, ElDocument, TypeAttribute, InputType, InputValidation } from '@/document'
 import { TextDecoder } from 'node:util'
 
 export class ElementCompletionItemProvider implements CompletionItemProvider<CompletionItem> {
@@ -30,7 +31,7 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
   private tagStartReg: RegExp = /<([\w-]*)$/
   private pugTagStartReg: RegExp = /^\s*[\w-]*$/
   private typeReg: RegExp = /type=\"([^\"]*)\"/
-  private validationContinue: RegExp = /validation\=\"([\w\|\:\,]+)|$/  
+  private validationContinue: RegExp = /validation\=\"([\w\|\:\,]+)|$/
   private size!: number
   private quotes!: string
   private formulateDocument: Record<string, any>
@@ -39,8 +40,7 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
   private typeValues: InputType[]
   private validations: InputValidation[]
 
-  constructor(){
-    
+  constructor() {
     const config = workspace.getConfiguration().get<ExtensionConfigutation>('vueformulate-helper')
     const language = config?.language || ExtensionLanguage.cn
     if (language === ExtensionLanguage.en) {
@@ -58,7 +58,7 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
     }
   }
 
-  replaceSiteUrl(description: string): string{
+  replaceSiteUrl(description: string): string {
     return description.replaceAll('__DOCS_SITE__', this.docsSite)
   }
 
@@ -90,7 +90,7 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
     let line = this._position.line
     let txt = this._document.lineAt(line).text
     let match: RegExpExecArray | null
-    if( match =this.typeReg.exec(txt)) {
+    if ((match = this.typeReg.exec(txt))) {
       return match[1]
     }
     return ''
@@ -110,7 +110,7 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
   /**
    * 获取前置验证器
    */
-   getValidationPreValue(): boolean {
+  getValidationPreValue(): boolean {
     let txt = this.getTextBeforePosition(this._position)
     return !!txt[0]
   }
@@ -198,17 +198,17 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
    */
   getAttrValues(tag: string, attr: string, formulateType: string): string[] {
     let attributes: DocumentAttribute[] = this.formulateDocument[tag].attributes || []
-    if(formulateType){
-      let typeItem = this.typeAttribute.find(res=>{
+    if (formulateType) {
+      let typeItem = this.typeAttribute.find((res) => {
         return res.name === formulateType
       })
-      if(typeItem){
+      if (typeItem) {
         attributes = attributes.concat(typeItem.attributes)
       }
     }
-    
+
     const attribute: DocumentAttribute | undefined = attributes.find((attribute) => attribute.name === attr)
-    
+
     if (!attribute) {
       return []
     }
@@ -225,16 +225,16 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
   getAttrValueCompletionItems(tag: string, attr: string, formulateType: string): CompletionItem[] {
     let completionItems: CompletionItem[] = []
     const values = this.getAttrValues(tag, attr, formulateType)
-    
+
     values.forEach((value) => {
       if (/\w+/.test(value)) {
-        let documentation:MarkdownString = new MarkdownString('', true)
+        let documentation: MarkdownString = new MarkdownString('', true)
 
-        let insertText:SnippetString | undefined;
-        
-        if(attr === 'type'){
+        let insertText: SnippetString | undefined
+
+        if (attr === 'type') {
           documentation = this.getAttrValueMarkdownByTypeValue(value)
-        }else if(attr === 'validation'){
+        } else if (attr === 'validation') {
           documentation = this.getAttrValueMarkdownByValidation(value)
           insertText = this.getAttrValueInsertTextByValidation(value)
         }
@@ -244,7 +244,7 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
           detail: `${tag}-${attr}`,
           kind: CompletionItemKind.Value,
           insertText: insertText || value,
-          documentation: documentation,
+          documentation: documentation
         })
       }
     })
@@ -254,19 +254,19 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
   /**
    * 计算表单域类型的文档
    * @param typeValue 表单域类型
-   * @returns 
+   * @returns
    */
   private getAttrValueMarkdownByTypeValue(typeValue: string): MarkdownString {
     let typeInfo: InputType | undefined
-    typeInfo = this.typeValues.find(res=>{
+    typeInfo = this.typeValues.find((res) => {
       return res.name === typeValue
     })
 
-    let documentation:MarkdownString = new MarkdownString('', true)
-    if(typeInfo === undefined){
+    let documentation: MarkdownString = new MarkdownString('', true)
+    if (typeInfo === undefined) {
       return documentation
     }
-    
+
     documentation.appendMarkdown(this.replaceSiteUrl(typeInfo.description))
     documentation.appendMarkdown(` 查看 [文档](${this.docsSite}${typeInfo.link}) 了解更多`)
     return documentation
@@ -275,45 +275,45 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
   /**
    * 计算验证器的文档
    * @param validation 验证器
-   * @returns 
+   * @returns
    */
   private getAttrValueMarkdownByValidation(validation: string): MarkdownString {
     let typeInfo: InputValidation | undefined
-    typeInfo = this.validations.find(res=>{
+    typeInfo = this.validations.find((res) => {
       return res.name === validation
     })
 
-    let documentation:MarkdownString = new MarkdownString('', true)
-    if(typeInfo === undefined){
+    let documentation: MarkdownString = new MarkdownString('', true)
+    if (typeInfo === undefined) {
       return documentation
     }
-    if(typeof typeInfo.description === 'string'){
+    if (typeof typeInfo.description === 'string') {
       documentation.appendMarkdown(this.replaceSiteUrl(typeInfo.description))
-    }else{
-      typeInfo.description.map(res=>{
+    } else {
+      typeInfo.description.map((res) => {
         documentation.appendMarkdown(this.replaceSiteUrl(res))
       })
     }
-    
-    if(typeInfo.link){
+
+    if (typeInfo.link) {
       documentation.appendMarkdown(` 查看 [文档](${this.docsSite}${typeInfo.link}) 了解更多`)
     }
-    
+
     return documentation
   }
 
   /**
    * 计算验证器的文档
    * @param validation 验证器
-   * @returns 
+   * @returns
    */
-   private getAttrValueInsertTextByValidation(validation: string): SnippetString|undefined {
+  private getAttrValueInsertTextByValidation(validation: string): SnippetString | undefined {
     let typeInfo: InputValidation | undefined
-    typeInfo = this.validations.find(res=>{
+    typeInfo = this.validations.find((res) => {
       return res.name === validation
     })
 
-    if(typeInfo === undefined || typeInfo.insertText === undefined){
+    if (typeInfo === undefined || typeInfo.insertText === undefined) {
       return undefined
     }
     return typeInfo.insertText
@@ -331,11 +331,11 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
 
     let events: DocumentEvent[] = this.formulateDocument[tag]?.events || []
 
-    if(formulateType){
-      let typeItem = this.typeAttribute.find(res=>{
+    if (formulateType) {
+      let typeItem = this.typeAttribute.find((res) => {
         return res.name === formulateType
       })
-      if(typeItem && typeItem.events){
+      if (typeItem && typeItem.events) {
         events = events.concat(typeItem.events)
       }
     }
@@ -378,11 +378,11 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
     const attributes: DocumentAttribute[] = this.formulateDocument[tag].attributes || []
     let likeTag = attributes.filter((attribute: DocumentAttribute) => attribute.name.includes(prefix))
 
-    if(formulateType){
-      let typeItem = this.typeAttribute.find(res=>{
+    if (formulateType) {
+      let typeItem = this.typeAttribute.find((res) => {
         return res.name === formulateType
       })
-      if(typeItem){
+      if (typeItem) {
         likeTag = likeTag.concat(typeItem.attributes)
       }
     }
@@ -400,11 +400,10 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
         documentation: attribute.description,
         kind: CompletionItemKind.Value,
         insertText: attribute.name,
-        range,
+        range
       })
     })
 
-    
     return completionItems
   }
 
@@ -430,7 +429,7 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
       const endPos = new Position(this._position.line, end)
       const range = new Range(startPos, endPos)
 
-      let snippetString:SnippetString = new SnippetString()
+      let snippetString: SnippetString = new SnippetString()
       snippetString.appendText(`${key}`)
       snippetString.appendTabstop()
       snippetString.appendText(`>`)
@@ -447,8 +446,6 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
     })
     return completionItems
   }
-
-  
 
   /**
    * 提供自动完成提示

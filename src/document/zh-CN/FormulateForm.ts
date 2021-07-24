@@ -49,7 +49,7 @@ export const attributes: DocumentAttribute[] = [
     value: '',
     default: '—',
     link: '/guide/forms/error-handling/#表单错误'
-  },
+  }
 ]
 
 export const events: DocumentEvent[] = [
@@ -82,9 +82,9 @@ export const events: DocumentEvent[] = [
     description: '*如果* 所有字段都通过验证，则由任何标准表单提交事件发出',
     parameter: '(event: Event)',
     link: '/guide/forms/#事件'
-  },
+  }
 ]
 
-export const document: ElDocument = { attributes , events}
+export const document: ElDocument = { attributes, events }
 
 export default document

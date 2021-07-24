@@ -1,5 +1,4 @@
-
-import {InputType} from '@/document'
+import { InputType } from '@/document'
 
 export const types: InputType[] = [
   {

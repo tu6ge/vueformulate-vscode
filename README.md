@@ -24,15 +24,13 @@ Vue Formulate
 
 ## Features
 
-### Document Hover Tips
+### autocomplete and documents link
 
-The only step to use this extension is moving your cursor to Element-UI tag or prop.
+[![W6I4n1.gif](https://z3.ax1x.com/2021/07/24/W6I4n1.gif)](https://imgtu.com/i/W6I4n1)
 
-[![gkk7IH.gif](https://z3.ax1x.com/2021/04/29/gkk7IH.gif)](https://imgtu.com/i/gkk7IH)
+### hover show document info
 
-### Autocomplete
-
-[![gkkTde.gif](https://z3.ax1x.com/2021/04/29/gkkTde.gif)](https://imgtu.com/i/gkkTde)
+[![W6TDiT.gif](https://z3.ax1x.com/2021/07/24/W6TDiT.gif)](https://imgtu.com/i/W6TDiT)
 
 ## Support
 

@@ -1,5 +1,4 @@
-
-import {SnippetString} from 'vscode'
+import { SnippetString } from 'vscode'
 
 export interface DocumentAttribute {
   // 参数名称
@@ -17,9 +16,9 @@ export interface DocumentAttribute {
 }
 
 export interface TypeAttribute {
-  name: string,
-  attributes: DocumentAttribute[],
-  events?: DocumentEvent[],
+  name: string
+  attributes: DocumentAttribute[]
+  events?: DocumentEvent[]
 }
 
 export interface DocumentEvent {
@@ -50,15 +49,15 @@ export interface DocumentSlot {
 }
 
 export interface InputType {
-  name: string,
-  description: string,
+  name: string
+  description: string
   link?: string
 }
 
 export interface InputValidation {
-  name: string,
-  description: string | string[],
-  link?: string,
+  name: string
+  description: string | string[]
+  link?: string
   insertText?: SnippetString
 }
 
