@@ -3,6 +3,7 @@ import * as vscode from 'vscode'
 
 import { ElementHoverProvier } from './hover-tips/element-hover-provider'
 import { ElementCompletionItemProvider } from './completion/element-completion-item-povider'
+import { VueformulateCodeActionProvider } from './code-action/vueformulate-code-action-provider'
 
 export function activate(context: ExtensionContext): void {
   console.log('extension "vueformulate-helper" is now active!')
@@ -43,6 +44,18 @@ export function activate(context: ExtensionContext): void {
       new ElementHoverProvier()
     )
   )
+
+  // context.subscriptions.push(
+  //   vscode.languages.registerCodeActionsProvider(
+  //     [
+  //       {
+  //         language: 'vue',
+  //         scheme: 'file'
+  //       }
+  //     ],
+  //     new VueformulateCodeActionProvider()
+  //   )
+  // )
 }
 
 // this method is called when your extension is deactivated
