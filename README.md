@@ -18,19 +18,35 @@
   <br>
 </p>
 
-> Vue Formulate Helper is a VS Code extension for Vue Formulate.
+> Vue Formulate Helper is a VS Code extension for Vue Formulate. support english and chinese.
 
-Vue Formulate
+Vue Formulate is a form validation build by vue
 
 ## Features
 
-### autocomplete and documents link
+### VueformulateInput autocomplete and documents link
 
-[![W6I4n1.gif](https://z3.ax1x.com/2021/07/24/W6I4n1.gif)](https://imgtu.com/i/W6I4n1)
+[![WgEKbR.gif](https://z3.ax1x.com/2021/07/25/WgEKbR.gif)](https://imgtu.com/i/WgEKbR)
+
+### VueformulateForm autocomplete and documents link
+
+[![WgENKH.gif](https://z3.ax1x.com/2021/07/25/WgENKH.gif)](https://imgtu.com/i/WgENKH)
 
 ### hover show document info
 
 [![W6TDiT.gif](https://z3.ax1x.com/2021/07/24/W6TDiT.gif)](https://imgtu.com/i/W6TDiT)
+
+### VueformulateInput 自动补全和文档链接
+
+[![WgErPf.gif](https://z3.ax1x.com/2021/07/25/WgErPf.gif)](https://imgtu.com/i/WgErPf)
+
+### VueformulateForm 自动补全和文档链接
+
+[![WgEyRS.gif](https://z3.ax1x.com/2021/07/25/WgEyRS.gif)](https://imgtu.com/i/WgEyRS)
+
+### 鼠标悬停显示文档
+
+[![WgEgMQ.gif](https://z3.ax1x.com/2021/07/25/WgEgMQ.gif)](https://imgtu.com/i/WgEgMQ)
 
 ## Support
 
