@@ -56,6 +56,10 @@ Vue Formulate is a form validation build by vue
 
 If you want to help improve this project, Please fork and initiate. a pull request after you fix some bugs or finished some new features. Your pull request will make Vue Formulate Helper better.
 
+## Thanks
+
+Element-UI-Helper
+
 ## LICENSE
 
 ![https://img.shields.io/github/license/tu6ge/vueformulate-vscode](https://img.shields.io/github/license/tu6ge/vueformulate-vscode)
