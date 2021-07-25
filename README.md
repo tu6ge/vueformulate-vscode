@@ -34,7 +34,7 @@ Vue Formulate is a form validation build by vue
 
 ### hover show document info
 
-[![W6TDiT.gif](https://z3.ax1x.com/2021/07/24/W6TDiT.gif)](https://imgtu.com/i/W6TDiT)
+[![WgV6Fx.gif](https://z3.ax1x.com/2021/07/25/WgV6Fx.gif)](https://imgtu.com/i/WgV6Fx)
 
 ### VueformulateInput 自动补全和文档链接
 
