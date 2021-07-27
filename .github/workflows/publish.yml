@@ -23,6 +23,6 @@ jobs:
         uses: tu6ge/vsce-publish@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
         with:
           default_branch: 'master'
