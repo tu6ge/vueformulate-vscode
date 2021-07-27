@@ -19,7 +19,7 @@ jobs:
         run: |
           npm install
 
-      - name: 'Publish to the npm registry'
+      - name: 'Publish to the visual studio marketplace'
         uses: tu6ge/vsce-publish@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
