@@ -20,7 +20,7 @@ jobs:
           npm install
 
       - name: 'Publish to the npm registry'
-        uses: tu6ge/vsce-publish@v0.1.5
+        uses: tu6ge/vsce-publish@v0.1.6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
