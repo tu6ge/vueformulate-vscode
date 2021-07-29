@@ -454,6 +454,7 @@ export class ElementCompletionItemProvider implements CompletionItemProvider<Com
 
       let snippetString: SnippetString = new SnippetString()
       snippetString.appendText(`${key}`)
+      key === 'FormulateInput' && snippetString.appendText(` type=`)
       snippetString.appendTabstop()
       snippetString.appendText(`>`)
       snippetString.appendTabstop()

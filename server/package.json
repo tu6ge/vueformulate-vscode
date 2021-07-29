@@ -1,0 +1,29 @@
+{
+	"name": "vueformulate-helper-server",
+	"description": "Example implementation of a language server in node.",
+	"version": "0.1.0",
+	"author": "Microsoft Corporation",
+	"license": "MIT",
+	"engines": {
+		"node": "*"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tu6ge/vueformulate-vscode"
+	},
+	"dependencies": {
+		"eslint-plugin-vueformulate": "^0.1.0",
+		"vscode-languageserver": "^7.0.0",
+		"vscode-languageserver-textdocument": "^1.0.1"
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./"
+	},
+	"devDependencies": {
+		"@types/eslint": "^7.28.0",
+		"eslint": "^7.32.0",
+		"vue-eslint-parser": "^7.10.0"
+	}
+}
