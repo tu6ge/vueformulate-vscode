@@ -14,8 +14,12 @@ import {
 	CompletionItemKind,
 	TextDocumentPositionParams,
 	TextDocumentSyncKind,
-	InitializeResult
+	InitializeResult,
 } from 'vscode-languageserver/node';
+
+import { ESLint, Linter } from 'eslint';
+
+import { Range } from 'vscode-languageserver-types';
 
 import {
 	TextDocument
@@ -179,6 +183,59 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 
 	// Send the computed diagnostics to VSCode.
 	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+}
+
+function toDiagnostic(error: Linter.LintMessage): Diagnostic {
+  const line = error.line - 1;
+  const column = error.column - 1;
+  const endLine = error.endLine ? error.endLine - 1 : line;
+  const endColumn = error.endColumn ? error.endColumn - 1 : column;
+  return {
+    range: Range.create(line, column, endLine, endColumn),
+    message: `[${error.ruleId}]\n${error.message}`,
+    source: 'eslint-plugin-vueformulate',
+    severity: error.severity === 1 ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error
+  };
+}
+
+async function doESLintValidation(document: TextDocument, engine: ESLint): Promise<Diagnostic[]> {
+  const rawText = document.getText();
+  // skip checking on empty template
+  if (rawText.replace(/\s/g, '') === '') {
+    return [];
+  }
+  const text = rawText.replace(/ {10}/, '<template>') + '</template>';
+  const report = await engine.lintText(text, { filePath: document.uri });
+
+  return report?.[0]?.messages?.map(toDiagnostic) ?? [];
+}
+
+export function createLintEngine() {
+  const SERVER_ROOT = __dirname;
+
+  const baseConfig: Linter.Config = {
+		parser: require.resolve('vue-eslint-parser'),
+		parserOptions: {
+			ecmaVersion: 2020,
+			sourceType: 'module'
+		},
+		env: {
+			browser: true,
+			es6: true
+		},
+		plugins: ['vue'],
+		rules: {
+			'vue/comment-directive': 'error',
+			'vue/jsx-uses-vars': 'error',
+			'vue/script-setup-uses-vars': 'error'
+		}
+	}
+
+  return new ESLint({
+    useEslintrc: false,
+    cwd: SERVER_ROOT,
+    baseConfig,
+  });
 }
 
 connection.onDidChangeWatchedFiles(_change => {
