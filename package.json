@@ -25,14 +25,22 @@
 			"type": "object",
 			"title": "Vue Formulate Helper Config",
 			"properties": {
-				"vueformulate-helper.language": {
+				"languageServerExample.maxNumberOfProblems": {
+					"scope": "resource",
+					"type": "number",
+					"default": 100,
+					"description": "Controls the maximum number of problems produced by the server."
+				},
+				"languageServerExample.trace.server": {
+					"scope": "window",
 					"type": "string",
-					"default": "zh-CN",
-					"description": "Document Language of Vue Formulate",
 					"enum": [
-						"zh-CN",
-						"en-US"
-					]
+						"off",
+						"messages",
+						"verbose"
+					],
+					"default": "off",
+					"description": "Traces the communication between VS Code and the language server."
 				}
 			}
 		}
@@ -47,7 +55,8 @@
 		"build": "rollup --config ./rollup.config.js",
 		"changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
 		"commit": "git-cz",
-		"docs": "node ./src/document/document-builder.js"
+		"docs": "node ./src/document/document-builder.js",
+		"postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.3",
