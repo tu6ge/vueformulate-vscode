@@ -134,56 +134,13 @@ documents.onDidClose(e => {
 
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
+
+const eslint = createLintEngine()
 documents.onDidChangeContent(change => {
-	validateTextDocument(change.document);
+	doESLintValidation(change.document, eslint).then(diagnostics=>{
+		connection.sendDiagnostics({ uri: change.document.uri, diagnostics });
+	})
 });
-
-async function validateTextDocument(textDocument: TextDocument): Promise<void> {
-	// In this simple example we get the settings for every validate run.
-	const settings = await getDocumentSettings(textDocument.uri);
-
-	// The validator creates diagnostics for all uppercase words length 2 and more
-	const text = textDocument.getText();
-	const pattern = /\b[A-Z]{2,}\b/g;
-	let m: RegExpExecArray | null;
-
-	let problems = 0;
-	const diagnostics: Diagnostic[] = [];
-	while ((m = pattern.exec(text)) && problems < settings.maxNumberOfProblems) {
-		problems++;
-		const diagnostic: Diagnostic = {
-			severity: DiagnosticSeverity.Warning,
-			range: {
-				start: textDocument.positionAt(m.index),
-				end: textDocument.positionAt(m.index + m[0].length)
-			},
-			message: `${m[0]} is all uppercase.`,
-			source: 'ex'
-		};
-		if (hasDiagnosticRelatedInformationCapability) {
-			diagnostic.relatedInformation = [
-				{
-					location: {
-						uri: textDocument.uri,
-						range: Object.assign({}, diagnostic.range)
-					},
-					message: 'Spelling matters'
-				},
-				{
-					location: {
-						uri: textDocument.uri,
-						range: Object.assign({}, diagnostic.range)
-					},
-					message: 'Particularly for names'
-				}
-			];
-		}
-		diagnostics.push(diagnostic);
-	}
-
-	// Send the computed diagnostics to VSCode.
-	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
-}
 
 function toDiagnostic(error: Linter.LintMessage): Diagnostic {
   const line = error.line - 1;
@@ -223,11 +180,9 @@ export function createLintEngine() {
 			browser: true,
 			es6: true
 		},
-		plugins: ['vue'],
+		plugins: ['vueformulate'],
 		rules: {
-			'vue/comment-directive': 'error',
-			'vue/jsx-uses-vars': 'error',
-			'vue/script-setup-uses-vars': 'error'
+			'vueformulate/required-type': 'error',
 		}
 	}
 
