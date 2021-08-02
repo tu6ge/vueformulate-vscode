@@ -1,7 +1,4 @@
-/* --------------------------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the MIT License. See License.txt in the project root for license information.
- * ------------------------------------------------------------------------------------------ */
+
 import {
 	createConnection,
 	TextDocuments,
@@ -109,7 +106,7 @@ connection.onDidChangeConfiguration(change => {
 	}
 
 	// Revalidate all open text documents
-	documents.all().forEach(validateTextDocument);
+	documents.all().forEach(doSendDiagnostics);
 });
 
 function getDocumentSettings(resource: string): Thenable<ExampleSettings> {
@@ -137,10 +134,14 @@ documents.onDidClose(e => {
 
 const eslint = createLintEngine()
 documents.onDidChangeContent(change => {
-	doESLintValidation(change.document, eslint).then(diagnostics=>{
-		connection.sendDiagnostics({ uri: change.document.uri, diagnostics });
-	})
+	doSendDiagnostics(change.document)
 });
+
+function doSendDiagnostics(textDocument: TextDocument){
+	doESLintValidation(textDocument, eslint).then(diagnostics=>{
+		connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+	})
+}
 
 function toDiagnostic(error: Linter.LintMessage): Diagnostic {
   const line = error.line - 1;
