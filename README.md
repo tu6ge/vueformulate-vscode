@@ -2,21 +2,18 @@
   <h1 align="center">Vue Formulate Helper</h1>
 </p>
 
-<p align="center">
-  <a href="https://github.com/tu6ge/vueformulate-vscode/issues">
-    <img src="https://img.shields.io/github/issues/tu6ge/vueformulate-vscode">
-  </a>
-  <a href="https://github.com/tu6ge/vueformulate-vscode.git">
-    <img src="https://img.shields.io/github/forks/tu6ge/vueformulate-vscode">
-  </a>
-  <a href="https://github.com/tu6ge/vueformulate-vscode.git">
-    <img src="https://img.shields.io/github/stars/tu6ge/vueformulate-vscode">
-  </a>
-  <a href="https://github.com/tu6ge/vueformulate-vscode/blob/master/LICENSE.MD">
-    <img src="https://img.shields.io/github/license/tu6ge/vueformulate-vscode">
-  </a>
-  <br>
-</p>
+
+[![vscode](https://vsmarketplacebadge.apphb.com/version-short/tu6ge.vueformulate-helper.svg)](https://marketplace.visualstudio.com/items?itemName=tu6ge.vueformulate-helper)
+[![](https://vsmarketplacebadge.apphb.com/installs/tu6ge.vueformulate-helper.svg
+)](https://marketplace.visualstudio.com/items?itemName=tu6ge.vueformulate-helper)
+[![](https://vsmarketplacebadge.apphb.com/downloads/tu6ge.vueformulate-helper.svg
+)](https://marketplace.visualstudio.com/items?itemName=tu6ge.vueformulate-helper)
+[![](https://vsmarketplacebadge.apphb.com/rating-star/tu6ge.vueformulate-helper.svg
+)](https://marketplace.visualstudio.com/items?itemName=tu6ge.vueformulate-helper)
+[![issues](https://img.shields.io/github/issues/tu6ge/vueformulate-vscode)](https://github.com/tu6ge/vueformulate-vscode/issues)
+[![forks](https://img.shields.io/github/forks/tu6ge/vueformulate-vscode)](https://github.com/tu6ge/vueformulate-vscode.git)
+[![star](https://img.shields.io/github/stars/tu6ge/vueformulate-vscode)](https://github.com/tu6ge/vueformulate-vscode.git)
+[![license](https://img.shields.io/github/license/tu6ge/vueformulate-vscode)](https://github.com/tu6ge/vueformulate-vscode.git)
 
 > Vue Formulate Helper is a VS Code extension for Vue Formulate. support english and chinese.
 
