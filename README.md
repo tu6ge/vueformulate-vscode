@@ -50,7 +50,7 @@ Vue Formulate is a form validation build by vue
 
 ## Install
 
-- search “vueformulate” in vscode marketplace, and install it
+- search “vueformulate” in vscode marketplace, and install it.
 
 - use web link , [Plugin link](https://marketplace.visualstudio.com/items?itemName=tu6ge.vueformulate-helper)
 
